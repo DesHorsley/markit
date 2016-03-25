@@ -4,15 +4,15 @@ module markit {
     export class MarkitEditor {
 
         private toolsManager: ToolsManager;
-        private canvas: HTMLCanvasElement;
+        private svg: any;
 
         constructor() {
         }
 
-        init(canvasId: string) {
-            this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-            this.toolsManager = new ToolsManager(this.canvas);
-            this.toolsManager.init();
+        init(svgId: string) {
+            this.svg = document.getElementById(svgId);            
+            this.toolsManager = new ToolsManager();
+            this.toolsManager.init(this.svg);
         }
     }
 }

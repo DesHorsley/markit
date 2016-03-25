@@ -3,19 +3,20 @@ module markit {
 
     export class ToolsManager {
         
-        private canvas: HTMLCanvasElement;
         private tools: Array<HTMLElement>;
 
-        constructor(canvas: HTMLCanvasElement) {
-            this.canvas = canvas;            
+        constructor() {
+                        
         }
 
-        init() {
+        init(svgElement: SVGElement) {
             var toolbar = document.createElement("div") as HTMLDivElement;
             this.tools = this.createTools();
             this.tools.forEach(function (e) {
                 toolbar.appendChild(e);
             });
+            
+            svgElement.parentNode.insertBefore(toolbar, svgElement);                        
         }
 
         createTools() {
