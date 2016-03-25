@@ -1,5 +1,6 @@
 ﻿
 /// <reference path="ToolsManager.ts" />
+
 module markit {
     export class MarkitEditor {
 
@@ -10,9 +11,10 @@ module markit {
         }
 
         init(svgId: string) {
-            this.svg = document.getElementById(svgId);            
             this.toolsManager = new ToolsManager();
-            this.toolsManager.init(this.svg);
+            var svg = <SVGElement>document.getElementsByTagName("svg")[0];
+            this.toolsManager.init(svg as SVGElement);
+        }
         }
     }
 }

@@ -25,25 +25,25 @@ module markit {
             var btn = document.createElement("button") as HTMLButtonElement;
             btn.id = "markit_btnPtr";
             btn.innerText = "Ptr";
-            btn.onclick = this.onclick;
+            btn.onclick = this.onclick.bind(this);
             tools.push(btn);
 
             btn = document.createElement("button") as HTMLButtonElement;
             btn.id = "markit_btnLine";            
             btn.innerText = "Line";
-            btn.onclick = this.onclick;
+            btn.onclick = this.onclick.bind(this);
             tools.push(btn);
 
             btn = document.createElement("button") as HTMLButtonElement;
             btn.id = "markit_btnRect";            
             btn.innerText = "Rectangle";
-            btn.onclick = this.onclick;
+            btn.onclick = this.onclick.bind(this);
             tools.push(btn);
 
             btn = document.createElement("button") as HTMLButtonElement;
             btn.id = "markit_Ellipse";            
             btn.innerText = "Ellipse";
-            btn.onclick = this.onclick;
+            btn.onclick = this.onclick.bind(this);
             tools.push(btn);
 
             return tools;
