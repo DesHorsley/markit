@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <TypeScriptCompile Include="scripts\snap\snapsvg.d.ts" />
     <TypeScriptCompile Include="scripts\MarkitEditor.ts" />
     <TypeScriptCompile Include="scripts\ToolsManager.ts" />
   </ItemGroup>
