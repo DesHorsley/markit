@@ -1,12 +1,16 @@
 ﻿
+/// <reference path="ToolSettings.ts" />
+/// <reference path="ToolSettingsObserver.ts" />
+
 module markit {
 
     export class ToolsManager {
         
         private tools: Array<HTMLElement>;
-
-        constructor() {
-                        
+        private toolSettingsManager: ToolSettingsObserver;
+        
+        constructor(tsManager: ToolSettingsObserver) {
+            this.toolSettingsManager = tsManager;                          
         }
 
         init(svgElement: SVGElement) {
@@ -49,8 +53,34 @@ module markit {
             return tools;
         }
             
-        onclick(e) {            
-            console.log("id: " + e.target.id.toString() + ", " + e.clientX.toString() + ", " + e.clientY.toString());
+        onclick(e) {
+        
+            var toolSettings = new ToolSettings();
+
+            switch (e.target.id) {
+                case "markit_btnPtr": 
+                    
+                    toolSettings.commandMode = CommandMode.Select;
+                    this.toolSettingsManager.setToolSettings(toolSettings);
+                    break;
+                
+                case "markit_btnLine": 
+                    toolSettings.commandMode = CommandMode.Line;
+                    this.toolSettingsManager.setToolSettings(toolSettings);
+                    break;
+                
+                case "markit_btnRect": 
+                    toolSettings.commandMode = CommandMode.Rectangle;
+                    this.toolSettingsManager.setToolSettings(toolSettings);
+                    break;
+                
+                case "markit_Ellipse": 
+                    toolSettings.commandMode = CommandMode.Ellipse;
+                    this.toolSettingsManager.setToolSettings(toolSettings);
+                    break;
+                                
+            }            
+            
         }
                         
     }
