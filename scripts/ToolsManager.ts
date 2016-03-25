@@ -16,13 +16,6 @@ module markit {
             this.tools.forEach(function (e) {
                 toolbar.appendChild(e);
             });
-
-            this.canvas.ondrag = this.ondrag;
-            this.canvas.ondragstart = this.ondragstart;
-            this.canvas.ondragend = this.ondragend;
-            this.canvas.onclick = this.onclick;
-
-            this.canvas.parentNode.insertBefore(toolbar, this.canvas);                        
         }
 
         createTools() {
@@ -58,18 +51,6 @@ module markit {
         onclick(e) {            
             console.log("id: " + e.target.id.toString() + ", " + e.clientX.toString() + ", " + e.clientY.toString());
         }
-            
-        ondrag(e) {
-            console.log("id: " + e.target.id.toString() + ", " + e.clientX.toString() + ", " + e.clientY.toString());            
-        }
-
-        ondragstart(e) {
-            console.log("id: " + e.target.id.toString() + ", " + e.clientX.toString() + ", " + e.clientY.toString());            
-        }
-
-        ondragend(e) {
-            console.log("id: " + e.target.id.toString() + ", " + e.clientX.toString() + ", " + e.clientY.toString());
-        }
-            
+                        
     }
 }
