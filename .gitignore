@@ -67,3 +67,7 @@ _vti_pvt/
 
 #Ignore private folder
 /Private/
+
+#ignore generated .js and .js.map files
+scripts/markit/*.js
+scripts/markit/*.js.map
