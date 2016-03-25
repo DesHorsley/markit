@@ -69,5 +69,8 @@ _vti_pvt/
 /Private/
 
 #ignore generated .js and .js.map files
-scripts/markit/*.js
-scripts/markit/*.js.map
+scripts/*.js
+scripts/*.js.map
+
+#ignore snap js files
+scripts/snap/*.js
