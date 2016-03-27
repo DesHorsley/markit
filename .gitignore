@@ -75,5 +75,9 @@ scripts/*.js.map
 #ignore snap js files
 scripts/snap/*.js
 
-#ignore .vs directory
+#### Markit Ignores
+
 .vs
+.bin
+NuGet.CommandLine.3.3.0
+node_modules
