@@ -74,3 +74,6 @@ scripts/*.js.map
 
 #ignore snap js files
 scripts/snap/*.js
+
+#ignore .vs directory
+.vs
