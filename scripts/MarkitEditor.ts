@@ -20,6 +20,7 @@ module markit {
         }
 
         setToolSettings(toolSettings: ToolSettings) {
+            this.paper.toolSettings = toolSettings;
             console.log("command: " + toolSettings.commandMode);
         }
     }

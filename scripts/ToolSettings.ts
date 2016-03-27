@@ -13,15 +13,15 @@ module markit {
         public commandMode: CommandMode;
         public width: number;
         public height: number;
-        public strokeThickness: number;
-        public color: any;
+        public strokeWidth: number;
+        public stroke: any;
         
         constructor() {
             this.commandMode = CommandMode.Select;
             this.width = 1;
             this.height = 1;
-            this.strokeThickness = 1;
-            this.color = "#fff";
+            this.strokeWidth = 1;
+            this.stroke = "#000";
         }       
     
     }
