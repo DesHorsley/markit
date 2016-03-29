@@ -40,7 +40,7 @@ module markit {
                 console.log("lmb: " + this.toolSettings.commandMode);
                 if (this.toolSettings.commandMode == CommandMode.Line) {
                     this.leftMouseButtonDown = true;
-                    
+
                     this.activeElement = new Line(this.snap, null);
                     var coords = this.toLocalCoords(e.clientX, e.clientY);
                     this.activeElement.origin = coords;
@@ -52,7 +52,14 @@ module markit {
                     var coords = this.toLocalCoords(e.clientX, e.clientY);
                     this.activeElement.origin = coords;
                     this.activeElement.resize(coords, false);
-               } 
+                }
+                else if (this.toolSettings.commandMode == CommandMode.Ellipse) {
+                    this.leftMouseButtonDown = true;
+                    this.activeElement = new Ellipse(this.snap, { stroke: this.toolSettings.stroke, fill: this.toolSettings.fill, strokeWidth: this.toolSettings.strokeWidth });
+                    var coords = this.toLocalCoords(e.clientX, e.clientY);
+                    this.activeElement.origin = coords;
+                    this.activeElement.resize(coords, false);
+                } 
             }            
         }
 
@@ -60,7 +67,8 @@ module markit {
             
             if (this.leftMouseButtonDown) {
                 if (this.toolSettings.commandMode == CommandMode.Line ||
-                    this.toolSettings.commandMode == CommandMode.Rectangle) {
+                    this.toolSettings.commandMode == CommandMode.Rectangle ||
+                    this.toolSettings.commandMode == CommandMode.Ellipse) {
                     console.log("mouse move - draw " + this.toolSettings.commandMode);
                     if (this.activeElement) {
                         this.activeElement.resize(this.toLocalCoords(e.clientX, e.clientY), false);
@@ -78,6 +86,10 @@ module markit {
             if (this.activeElement instanceof Rectangle) {
                 (<Rectangle>this.activeElement).flipCoords();
             }
+            else if (this.activeElement instanceof Ellipse) {
+                (<Ellipse>this.activeElement).flipCoords();
+            }
+
             this.elements.push(this.activeElement);
             this.activeElement = null;
         }
