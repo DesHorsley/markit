@@ -48,6 +48,9 @@
   <ItemGroup />
   <ItemGroup>
     <TypeScriptCompile Include="scripts\Paper.ts" />
+    <TypeScriptCompile Include="scripts\Rectangle.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="scripts\Shape.ts" />
     <TypeScriptCompile Include="scripts\snap\snapsvg.d.ts" />
     <TypeScriptCompile Include="scripts\ToolSettings.ts" />
