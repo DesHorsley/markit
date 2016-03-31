@@ -1,69 +1,68 @@
 ﻿
 /// <reference path="snap/snapsvg.d.ts" />
+/// <reference path="ToolSettings.ts" />
 
 module markit {
 
     export abstract class Shape {
 
-        public origin: { x: number, y: number};
-        public element: Snap.Element;
-        public attributes: Object;
-        protected surface: Snap.Paper;
+        protected _origin: { x: number, y: number };
+        protected _element: Snap.Element;
+        protected _toolSettings: ToolSettings;
+        protected _surface: Snap.Paper;
 
-        constructor(theSurface: Snap.Paper, attr?: Object) {
-            this.surface = theSurface;
-            if (attr !== undefined && attr ) {
-                this.attributes = attr
+        public get origin(): { x: number, y: number } {
+            return this._origin;
+        }
+
+        public element(): Snap.Element {
+            return this._element;
+        }
+       
+        public get toolSettings(): ToolSettings {
+            return this._toolSettings;
+        }        
+        
+        constructor(surface: Snap.Paper, origin: { x: number, y: number }, toolSettings: ToolSettings) {
+
+            if (typeof surface == "undefined" || surface == null) {
+                throw "surface parameter is required.";
             }
-            else {
-                this.attributes = {
-                    stroke: "#000",
-                    strokeWidth: 1
-                };
-            }               
+
+            if (typeof origin == "undefined" || origin == null) {
+                throw "origin parameter is required.";
+            }
+
+            if (typeof toolSettings == "undefined" || toolSettings == null) {
+                throw "toolSettings parameter is required.";
+            }
+
+            this._surface = surface;
+            this._origin = origin;
+            this._toolSettings = toolSettings;           
         
         }       
 
-        remove() {
-            if (this.element) {
-                this.element.remove();
-                this.element = null;
-            }
-        }
-
-        abstract resize(coords: { x: number, y: number }, fromOrigin: boolean): void;
-
-    }
-
-    export class Line extends Shape {
-
-        public endpoint: { x: number, y: number };
-
-        constructor(theSurface: Snap.Paper, attr?: Object) {
-            super(theSurface, attr);
-        }
-
-        resize(coords: { x: number, y: number }, fromOrigin = false) {
+        removeElement(): void {
             
-            var previousCoords;
-            if (fromOrigin) {
-                previousCoords = this.origin;
-                this.origin = coords;
-            }
-            else {
-                previousCoords = this.endpoint;
-                this.endpoint = coords;
-            }
-
-            if (this.element === undefined || this.element === null) {
-           
-                this.element = this.surface.line(this.origin.x, this.origin.y, this.endpoint.x, this.endpoint.y);
-                this.element.attr(this.attributes);
-            }
-            else {
-                this.element.attr({ x2: this.endpoint.x, y2: this.endpoint.y});                
+            if (typeof this._element !== "undefined" && this._element !== null) {
+                this._element.remove();
+                this._element = null;
             }            
-            
         }
+
+        abstract draw(coords: { x: number, y: number }): void;
+        abstract drawComplete(): void;
+
+        setToolSettings(settings: ToolSettings): void {
+        
+            if (typeof settings == "undefined" || settings == null) {
+                throw "settings parameter is required.";
+            }
+
+            this._toolSettings = settings;
+        }
+
     }
+    
 }

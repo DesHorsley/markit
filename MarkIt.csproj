@@ -48,6 +48,7 @@
   <ItemGroup />
   <ItemGroup>
     <TypeScriptCompile Include="scripts\Ellipse.ts" />
+    <TypeScriptCompile Include="scripts\Line.ts" />
     <TypeScriptCompile Include="scripts\Paper.ts" />
     <TypeScriptCompile Include="scripts\Rectangle.ts">
       <SubType>Code</SubType>

@@ -32,64 +32,50 @@ module markit {
 
         onmousedown(e) {
             
-            if (this.toolSettings === undefined || this.toolSettings == null) {
+            if (typeof this.toolSettings == "undefined" || this.toolSettings == null) {
                 return; // toolsettings not set
             }
 
             if (e.which == 1) {
-                console.log("lmb: " + this.toolSettings.commandMode);
-                if (this.toolSettings.commandMode == CommandMode.Line) {
-                    this.leftMouseButtonDown = true;
 
-                    this.activeElement = new Line(this.snap, null);
-                    var coords = this.toLocalCoords(e.clientX, e.clientY);
-                    this.activeElement.origin = coords;
-                    this.activeElement.resize(coords, false);
+                console.log("lmb: " + this.toolSettings.commandMode);
+                this.leftMouseButtonDown = true;
+                var coords = this.toLocalCoords(e.clientX, e.clientY);
+
+                if (this.toolSettings.commandMode == CommandMode.Line) {
+                    this.activeElement = new Line(this.snap, coords, this.toolSettings);
                 }
                 else if (this.toolSettings.commandMode == CommandMode.Rectangle) {
-                    this.leftMouseButtonDown = true;
-                    this.activeElement = new Rectangle(this.snap, { stroke: this.toolSettings.stroke, fill: this.toolSettings.fill, strokeWidth: this.toolSettings.strokeWidth });
-                    var coords = this.toLocalCoords(e.clientX, e.clientY);
-                    this.activeElement.origin = coords;
-                    this.activeElement.resize(coords, false);
+                    this.activeElement = new Rectangle(this.snap, coords, this.toolSettings);
                 }
                 else if (this.toolSettings.commandMode == CommandMode.Ellipse) {
-                    this.leftMouseButtonDown = true;
-                    this.activeElement = new Ellipse(this.snap, { stroke: this.toolSettings.stroke, fill: this.toolSettings.fill, strokeWidth: this.toolSettings.strokeWidth });
-                    var coords = this.toLocalCoords(e.clientX, e.clientY);
-                    this.activeElement.origin = coords;
-                    this.activeElement.resize(coords, false);
-                } 
+                    this.activeElement = new Ellipse(this.snap, coords, this.toolSettings);
+                }                    
+                
             }            
         }
 
         onmousemove(e) {
             
             if (this.leftMouseButtonDown) {
-                if (this.toolSettings.commandMode == CommandMode.Line ||
-                    this.toolSettings.commandMode == CommandMode.Rectangle ||
-                    this.toolSettings.commandMode == CommandMode.Ellipse) {
+
+                if (typeof this.activeElement != "undefined" && this.activeElement != null) {
+
                     console.log("mouse move - draw " + this.toolSettings.commandMode);
-                    if (this.activeElement) {
-                        this.activeElement.resize(this.toLocalCoords(e.clientX, e.clientY), false);
-                    }                    
-                }
+                    var coords = this.toLocalCoords(e.clientX, e.clientY);
+                    this.activeElement.draw(coords);
+                } 
+                
             }          
         }
 
         onmouseup(e) {
             this.leftMouseButtonDown = false;
-            if (this.activeElement === undefined || this.activeElement === null) {
+            if (typeof this.activeElement == "undefined" || this.activeElement == null) {
                 return;
             }
 
-            if (this.activeElement instanceof Rectangle) {
-                (<Rectangle>this.activeElement).flipCoords();
-            }
-            else if (this.activeElement instanceof Ellipse) {
-                (<Ellipse>this.activeElement).flipCoords();
-            }
-
+            this.activeElement.drawComplete();
             this.elements.push(this.activeElement);
             this.activeElement = null;
         }
@@ -97,7 +83,7 @@ module markit {
         onmouseout(e) {
             console.log("mouse out: " + e.target.id + ", x: " + e.clientX + ", y: " + e.clientY);
 
-            // containsPoint rewquired as chrome was misfiring event while still in the canvas
+            // containsPoint required as chrome was misfiring event while still in the canvas
             if (this.containsPoint(e.clientX, e.clientY)) {
                 console.log("mouseout misfire.");
                 e.stopPropagation();
@@ -106,8 +92,8 @@ module markit {
 
             if (this.leftMouseButtonDown) {
                 this.leftMouseButtonDown = false;
-                if (this.activeElement) {
-                    this.activeElement.remove();
+                if (typeof this.activeElement != "undefined" && this.activeElement != null) {
+                    this.activeElement.removeElement();
                     this.activeElement = null;
                 }
             }

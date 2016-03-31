@@ -7,77 +7,66 @@ module markit {
 
     export class Ellipse extends Shape {
 
-        public endpoint: { x: number, y: number };
-
-        private flipX: boolean;
-        private flipY: boolean;
-
-        constructor(theSurface: Snap.Paper, attr?: Object) {
-            super(theSurface, attr);  
-            
-            this.flipX = false;
-            this.flipY = false;          
+        
+        constructor(surface: Snap.Paper, origin: { x: number, y: number }, toolSettings: ToolSettings) {
+            super(surface, origin, toolSettings);   
         }
 
-        resize(coords: { x: number, y: number }, fromOrigin = false) {
+        draw(coords: { x: number, y: number }) {
 
-            if (fromOrigin) {
-                this.origin = coords;
+            if (typeof coords == "undefined" || coords == null) {
+                throw "coords parameter is required.";
+            }
+
+            var endpoints = this.getEndpoints(coords);
+
+            if (typeof this._element == "undefined" || this._element == null) {
+
+                this._element = this._surface.ellipse(endpoints.x, endpoints.y, endpoints.rx, endpoints.ry);
+                this._element.attr({
+                    stroke: this._toolSettings.stroke,
+                    strokeWidth: this._toolSettings.strokeWidth,
+                    fill: this._toolSettings.fill
+                });
             }
             else {
-                this.endpoint = coords;
-            }
-
-            if (this.element === undefined || this.element == null) {
-                this.element = this.surface.ellipse(this.origin.x, this.origin.y, 1, 1);
-                this.element.attr(this.attributes);
-            }
-            else {
-
-                var x, y, w, h;
-                if (this.endpoint.x < this.origin.x) {
-                    this.flipX = true;
-                    x = this.endpoint.x;
-                }
-                else {
-                    this.flipX = false;
-                    x = this.origin.x;
-                }
-
-                if (this.endpoint.y < this.origin.y) {
-                    this.flipY = true;
-                    y = this.endpoint.y;
-                }
-                else {
-                    this.flipY = false;
-                    y = this.origin.y;
-                }
-
-                w = Math.abs(this.endpoint.x - this.origin.x);
-                h = Math.abs(this.endpoint.y - this.origin.y);
-
-                this.element.attr({
-                    x: x,
-                    y: y,
-                    rx: w,
-                    ry: h
+                this._element.attr({
+                    x: endpoints.x,
+                    y: endpoints.y,
+                    rx: endpoints.rx,
+                    ry: endpoints.ry
                 });
             }
         }
 
-        flipCoords(): void {
-
-            if (this.flipX) {
-                var x = this.origin.x;
-                this.origin.x = this.endpoint.x;
-                this.endpoint.x = x;
-            }
-
-            if (this.flipY) {
-                var y = this.origin.y;
-                this.origin.y = this.endpoint.y;
-                this.endpoint.y = y;
-            }
+        drawComplete(): void {            
+        
+            this._origin.x = Number(this._element.attr("x"));
+            this._origin.y = Number(this._element.attr("y"));
         }
+
+        setToolSettings(settings: ToolSettings): void {
+
+            super.setToolSettings(settings);
+
+            this._element.attr({
+                stroke: this._toolSettings.stroke,
+                strokeWidth: this._toolSettings.strokeWidth,
+                fill: this._toolSettings.fill
+            });
+        }
+
+        private getEndpoints(coords: { x: number, y: number }): { x: number, y: number, rx: number, ry: number } {
+            
+            var endpoints = {
+                x: coords.x < this._origin.x ? coords.x : this._origin.x,
+                y: coords.y < this._origin.y ? coords.y : this._origin.y,
+                rx: Math.abs(this._origin.x - coords.x),
+                ry: Math.abs(this._origin.y - coords.y) 
+            };
+
+            return endpoints;
+        }
+
     }
 }
