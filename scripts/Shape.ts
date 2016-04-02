@@ -15,7 +15,7 @@ module markit {
             return this._origin;
         }
 
-        public element(): Snap.Element {
+        public get element(): Snap.Element {
             return this._element;
         }
        
