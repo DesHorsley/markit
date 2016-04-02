@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <Content Include="chipping.jpg" />
     <Content Include="gulpfile.js" />
     <Content Include="npmPlaceholder.txt" />
     <Content Include="scripts\snap\snap.svg-min.js" />
