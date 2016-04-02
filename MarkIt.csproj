@@ -39,6 +39,7 @@
     <None Include=".bin\node.cmd" />
     <None Include=".bin\npm.cmd" />
     <Content Include="package.json" />
+    <Content Include="chutzpah.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -60,6 +61,8 @@
     <TypeScriptCompile Include="scripts\ToolSettingsObserver.ts" />
     <TypeScriptCompile Include="scripts\MarkitEditor.ts" />
     <TypeScriptCompile Include="scripts\ToolsManager.ts" />
+    <TypeScriptCompile Include="scripts\typings\jasmine\jasmine.d.ts" />
+    <TypeScriptCompile Include="UnitTests\LineTest.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>

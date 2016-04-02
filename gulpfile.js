@@ -6,7 +6,8 @@
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
     concat = require('gulp-concat'),
-    del = require('del');
+    del = require('del'),
+    chutzpah = require('gulp-chutzpah');
 
 var paths = {
     snap: "packages/Snap.svg.js.0.4.1/content/Scripts/snap/",
@@ -31,5 +32,16 @@ gulp.task('buildScripts', ['clean'], function () {
     return gulp.src(['scripts/*.js', '!scripts/*-build.js'])
     .pipe(concat('markitEditor-build.js'))
     .pipe(gulp.dest('scripts/'));
-    
-})
+});
+
+gulp.task("runUnitTests", [], function () {
+
+    var opts = {
+        executable: "packages\\Chutzpah.4.2.0\\tools\\chutzpah.console.exe",
+        trace: true,
+        vsoutput: true
+    };
+
+    gulp.src("UnitTests/*.js")
+        .pipe(chutzpah(opts));
+});

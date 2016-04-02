@@ -1,0 +1,25 @@
+﻿{
+  "Framework": "jasmine",
+  "FrameworkVersion": "2",
+  "TestFileTimeout": 10000,
+  "vsoutput": true,
+  "Compile": {
+    "Extensions": [ ".ts" ],
+    "ExtensionsWithNoOutput": [ ".d.ts" ],
+    "Executable": null,
+    "Mode": "External",
+    "UseSourceMaps": true
+  },
+  "References": [
+    {
+      "Path": "scripts",
+      "IncludeInTestHarness": true,
+      "Includes": [ "*.ts" ],
+      "Excludes": [ "*-build*", "*-min*", "*.d.ts" ]
+    }
+    
+  ],
+  "Tests": [
+    { "Path": "UnitTests" }
+  ]
+}

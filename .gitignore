@@ -82,3 +82,6 @@ scripts/snap/*.js
 NuGet.CommandLine.3.3.0
 node_modules
 .vs/config/applicationhost.config
+
+UnitTests/*.js
+UnitTests/*.js.map
