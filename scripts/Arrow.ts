@@ -7,18 +7,6 @@ interface String {
     format(args: (string|number)[]  ): string;
 }
 
-// poor man's string.format function. doesn't really belong in this class. we'll
-// have to move it later
-String.prototype.format = function (args: (string|number)[]) : string {
-
-    let str = this;
-    for (let i = 0; i < args.length; i++) {
-        str = str.replace("{" + i + "}", args[i].toString());
-    }
-
-    return str;
-};
-
 module markit {
 
     export class Arrow extends Shape {
@@ -51,7 +39,7 @@ module markit {
                     
                 var centre = this.getMidPoint(this.getVertices(coords));
 
-                let str = "rotate({0}, {1}, {2})".format([angle, centre.x, centre.y]);
+                let str = `rotate(${angle}, ${centre.x}, ${centre.y})`;
                 console.log("transform string: " + str);
                 this.arrowHead.transform(str);                
                  
@@ -76,7 +64,7 @@ module markit {
                 });
                 var centre = this.getMidPoint(this.getVertices(coords));
 
-                let str = "rotate({0}, {1}, {2})".format([angle, centre.x, centre.y]);
+                let str = `rotate(${angle}, ${centre.x}, ${centre.y})`;
                 console.log("transform string: " + str);
                 this.arrowHead.transform(str);
 
@@ -134,7 +122,7 @@ module markit {
                 points.push(vertices[i][1]);
             }
 
-            var str = "{0},{1} {2},{3} {4},{5}".format(points);
+            var str = `${points[0]},${points[1]} ${points[2]},${points[3]} ${points[4]},${points[5]}`;
             console.log("points: " + str);
             return str;
         }
