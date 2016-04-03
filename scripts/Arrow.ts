@@ -77,7 +77,7 @@ module markit {
         }
 
         drawComplete(): void {
-            this._element = this._surface.group([this.arrowHead, this.line]);
+            this._element = this._surface.group(this.arrowHead, this.line);
         }
 
         setToolSettings(settings: ToolSettings): void {
