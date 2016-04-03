@@ -5,7 +5,8 @@ module markit {
         Select = 0,
         Line,
         Rectangle,
-        Ellipse
+        Ellipse,
+        Arrow
     }
 
     export class ToolSettings {
