@@ -85,3 +85,7 @@ node_modules
 
 UnitTests/*.js
 UnitTests/*.js.map
+
+#ignore jasmine content
+content/jasmine
+scripts/jasmine

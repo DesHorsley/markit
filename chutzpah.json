@@ -2,7 +2,9 @@
   "Framework": "jasmine",
   "FrameworkVersion": "2",
   "TestFileTimeout": 10000,
+  "RootReferencePathMode": "SettingsFileDirectory",
   "vsoutput": true,
+
   "Compile": {
     "Extensions": [ ".ts" ],
     "ExtensionsWithNoOutput": [ ".d.ts" ],
@@ -10,16 +12,24 @@
     "Mode": "External",
     "UseSourceMaps": true
   },
+
   "References": [
     {
-      "Path": "scripts",
+      "Path": "UnitTests",
       "IncludeInTestHarness": true,
-      "Includes": [ "*.ts" ],
-      "Excludes": [ "*-build*", "*-min*", "*.d.ts" ]
+      "Includes": [ "markit-UnitTests.js" ]
+    },
+
+    {
+      "Path": "scripts/snap",
+      "IncludeInTestHarness": true,
+      "Includes": [ "**.js" ],
+      "Excludes": [ "*-build*", "**-min*" ]
     }
-    
+
   ],
   "Tests": [
     { "Path": "UnitTests" }
   ]
+    
 }
