@@ -30,7 +30,6 @@
     <Content Include="Content\jasmine\jasmine.css" />
     <Content Include="Content\jasmine\jasmine_favicon.png" />
     <Content Include="gulpfile.js" />
-    <Content Include="npmPlaceholder.txt" />
     <Content Include="scripts\jasmine\boot.js" />
     <Content Include="scripts\jasmine\console.js" />
     <Content Include="scripts\jasmine\jasmine-html.js" />
