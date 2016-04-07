@@ -40,6 +40,10 @@ module markit {
         }
 
         drawComplete(): void {
+            if (!this._element) {
+                // Most likely cause is draw was not called - no mouse move event.
+                return;
+            }
 
             this._origin.x = Number(this._element.attr("x"));
             this._origin.y = Number(this._element.attr("y"));
