@@ -50,6 +50,12 @@ module markit {
             btn.onclick = this.onclick.bind(this);
             tools.push(btn);
 
+            btn = document.createElement("button") as HTMLButtonElement;
+            btn.id = "markit_Arrow";
+            btn.innerText = "Arrow";
+            btn.onclick = this.onclick.bind(this);
+            tools.push(btn);
+
             return tools;
         }
             
@@ -76,6 +82,11 @@ module markit {
                 
                 case "markit_Ellipse": 
                     toolSettings.commandMode = CommandMode.Ellipse;
+                    this.toolSettingsManager.setToolSettings(toolSettings);
+                    break;
+
+                case "markit_Arrow":
+                    toolSettings.commandMode = CommandMode.Arrow;
                     this.toolSettingsManager.setToolSettings(toolSettings);
                     break;
                                 

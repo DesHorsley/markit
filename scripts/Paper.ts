@@ -3,6 +3,9 @@
 /// <reference path="ToolSettings.ts" />
 /// <reference path="Shape.ts" />
 /// <reference path="Rectangle.ts" />
+/// <reference path="Ellipse.ts" />
+/// <reference path="Line.ts" />
+/// <reference path="Arrow.ts" />
 
 module markit {
 
@@ -50,8 +53,10 @@ module markit {
                 }
                 else if (this.toolSettings.commandMode == CommandMode.Ellipse) {
                     this.activeElement = new Ellipse(this.snap, coords, this.toolSettings);
-                }                    
-                
+                }
+                else if (this.toolSettings.commandMode == CommandMode.Arrow) {
+                    this.activeElement = new Arrow(this.snap, coords, this.toolSettings);
+                }           
             }            
         }
 
@@ -64,8 +69,7 @@ module markit {
                     console.log("mouse move - draw " + this.toolSettings.commandMode);
                     var coords = this.toLocalCoords(e.clientX, e.clientY);
                     this.activeElement.draw(coords);
-                } 
-                
+                }                 
             }          
         }
 
