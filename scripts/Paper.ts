@@ -15,6 +15,7 @@ module markit {
         public toolSettings: ToolSettings;
 
         private activeElement: Shape;
+        //private selected: Shape;
         private leftMouseButtonDown: boolean;
         private svg: SVGElement;
         private elements: Array<Shape>;
@@ -23,15 +24,23 @@ module markit {
             
             this.svg = svg;
             this.snap = Snap(svg);
+        //    this.svg.onclick = this.onclick.bind(this);
             this.svg.onmousedown = this.onmousedown.bind(this);
             this.svg.onmousemove = this.onmousemove.bind(this);
             this.svg.onmouseup = this.onmouseup.bind(this);
             this.svg.onmouseout = this.onmouseout.bind(this);
-            
+
             this.activeElement = null;
             this.leftMouseButtonDown = false;
             this.elements = new Array<Shape>();          
         }
+
+        //onclick(e) {
+        //    console.log(`Clicked ${e.srcElement}`);
+        //    if (e.srcElement) {
+        //        this.selected = e.srcElement;
+        //    }
+        //}
 
         onmousedown(e) {
             
@@ -106,7 +115,7 @@ module markit {
         toLocalCoords(x: number, y: number) {
         
             var rect = this.svg.getBoundingClientRect();
-            console.log("rect: left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
+            //console.log("Bounding rectangle: left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
 
             var localX = Math.round(x - rect.left);
             var localY = Math.round(y - rect.top);

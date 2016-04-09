@@ -22,7 +22,7 @@ module markit {
             this.commandMode = CommandMode.Select;
             this.width = 1;
             this.height = 1;
-            this.strokeWidth = 1;
+            this.strokeWidth = 3;
             this.stroke = "#000";
             this.fill = "none";
         }       
