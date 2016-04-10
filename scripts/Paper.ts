@@ -20,21 +20,21 @@ module markit {
         private elements: Array<Shape>;
 
         constructor(svg: SVGElement) {
-            
+
             this.svg = svg;
             this.snap = Snap(svg);
             this.svg.onmousedown = this.onmousedown.bind(this);
             this.svg.onmousemove = this.onmousemove.bind(this);
             this.svg.onmouseup = this.onmouseup.bind(this);
             this.svg.onmouseout = this.onmouseout.bind(this);
-            
+
             this.activeElement = null;
             this.leftMouseButtonDown = false;
-            this.elements = new Array<Shape>();          
+            this.elements = new Array<Shape>();
         }
 
         onmousedown(e) {
-            
+
             if (typeof this.toolSettings == "undefined" || this.toolSettings == null) {
                 return; // toolsettings not set
             }
@@ -56,12 +56,12 @@ module markit {
                 }
                 else if (this.toolSettings.commandMode == CommandMode.Arrow) {
                     this.activeElement = new Arrow(this.snap, coords, this.toolSettings);
-                }           
-            }            
+                }
+            }
         }
 
         onmousemove(e) {
-            
+
             if (this.leftMouseButtonDown) {
 
                 if (typeof this.activeElement != "undefined" && this.activeElement != null) {
@@ -69,8 +69,8 @@ module markit {
                     console.log("mouse move - draw " + this.toolSettings.commandMode);
                     var coords = this.toLocalCoords(e.clientX, e.clientY);
                     this.activeElement.draw(coords);
-                }                 
-            }          
+                }
+            }
         }
 
         onmouseup(e) {
@@ -104,26 +104,33 @@ module markit {
         }
 
         toLocalCoords(x: number, y: number) {
-        
+
             var rect = this.svg.getBoundingClientRect();
             console.log("rect: left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
 
             var localX = Math.round(x - rect.left);
             var localY = Math.round(y - rect.top);
-            console.log("local coords: {x: " + localX + ", y: " + localY + "}}");            
-            
+            console.log("local coords: {x: " + localX + ", y: " + localY + "}}");
+
             return {
                 x: localX,
                 y: localY
             };
         }
 
-        containsPoint(x: number, y: number) {            
+        containsPoint(x: number, y: number) {
             var rect = this.svg.getBoundingClientRect();
             if (rect.left < x && x < rect.right && rect.top < y && y < rect.bottom) {
                 return true;
             }
-            return false;            
+            return false;
+        }
+
+        addImage(imageURL: URL): void {
+
+            var image = new ImageWrapper(this.snap, { x: 0, y: 0 }, this.toolSettings, imageURL);
+            image.draw({ x: 0, y: 0 });
+            this.elements.push(image);            
         }
 
     }

@@ -2,7 +2,8 @@
 module markit {
 
     export enum CommandMode {
-        Select = 0,
+        None = 0,
+        Select,
         Line,
         Rectangle,
         Ellipse,
@@ -19,7 +20,7 @@ module markit {
         public fill: string;
 
         constructor() {
-            this.commandMode = CommandMode.Select;
+            this.commandMode = CommandMode.None;
             this.width = 1;
             this.height = 1;
             this.strokeWidth = 1;

@@ -14,7 +14,8 @@ module markit {
 
         init(svgId: string) {
             var svg = <SVGElement>document.getElementsByTagName("svg")[0];
-            this.paper = new markit.Paper(svg);            
+            this.paper = new markit.Paper(svg);
+            this.paper.toolSettings = new ToolSettings();
             this.toolsManager = new ToolsManager(this);
             this.toolsManager.init(svg as SVGElement);
         }
@@ -22,6 +23,11 @@ module markit {
         setToolSettings(toolSettings: ToolSettings) {
             this.paper.toolSettings = toolSettings;
             console.log("command: " + toolSettings.commandMode);
+        }
+
+        addImage(imageDataURL: URL): void {
+
+            this.paper.addImage(imageDataURL);
         }
     }
 }

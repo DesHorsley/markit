@@ -56,6 +56,16 @@ module markit {
             btn.onclick = this.onclick.bind(this);
             tools.push(btn);
 
+            btn = document.createElement("input") as HTMLInputElement;
+            btn.id = "markit_Image";
+            btn.type = "file";
+            let multipleAttr = document.createAttribute("multiple");
+            btn.setAttribute("multiple", "multiple");
+            btn.setAttribute("accept", "image/*");
+            btn.innerHTML = "Image";
+            btn.onchange = this.onchange.bind(this);
+            tools.push(btn);
+
             return tools;
         }
             
@@ -92,6 +102,22 @@ module markit {
                                 
             }            
             
+        }
+
+        onchange(e) {
+
+            e = e || window.event;
+
+            for (let i = 0; i < e.target.files.length; i++) {
+
+                let reader = new FileReader();
+                reader.onload = (function (evt) {
+
+                    this.toolSettingsManager.addImage((<FileReader>evt.target).result);
+                                      
+                }).bind(this);
+                reader.readAsDataURL(e.target.files[i]);
+            }            
         }
                         
     }
