@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Markit by DesHorsley</title>
-
+    <script type="text/javascript" src="scripts/snap/snap.svg-min.js"></script>
+    <script type="text/javascript" src="scripts/markitEditor-build.js"></script>
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/github-light.css">
     <meta name="viewport" content="width=device-width">
@@ -13,10 +14,20 @@
     <![endif]-->
   </head>
   <body>
+    <script type="text/javascript">
+    window.onload = function () {
+        var editor = new markit.MarkitEditor();
+        editor.init("mySVG");
+    }
+    </script>
     <div class="wrapper">
       <header>
         <h1>Markit</h1>
         <p>Image annotations using html and typescript</p>
+        
+        <svg id="mySVG" xmlns="http://www.w3.org/2000/svg" width="800" height="600"  style="border: 2px dashed gray">
+          <image xlink:href="chipping.jpg" width="800" height="600"></image>
+        </svg>
 
         <p class="view"><a href="https://github.com/DesHorsley/markit">View the Project on GitHub <small>DesHorsley/markit</small></a></p>
 
