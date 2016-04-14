@@ -15,7 +15,7 @@ module markit {
         public toolSettings: ToolSettings;
 
         private activeElement: Shape;
-        //private selected: Shape;
+        private selectedElements: Shape[];
         private leftMouseButtonDown: boolean;
         private svg: SVGElement;
         private elements: Array<Shape>;
@@ -24,23 +24,32 @@ module markit {
             
             this.svg = svg;
             this.snap = Snap(svg);
-        //    this.svg.onclick = this.onclick.bind(this);
+            this.svg.onclick = this.onclick.bind(this);
             this.svg.onmousedown = this.onmousedown.bind(this);
             this.svg.onmousemove = this.onmousemove.bind(this);
             this.svg.onmouseup = this.onmouseup.bind(this);
             this.svg.onmouseout = this.onmouseout.bind(this);
 
             this.activeElement = null;
+            this.selectedElements = [];
             this.leftMouseButtonDown = false;
             this.elements = new Array<Shape>();          
         }
 
-        //onclick(e) {
-        //    console.log(`Clicked ${e.srcElement}`);
-        //    if (e.srcElement) {
-        //        this.selected = e.srcElement;
-        //    }
-        //}
+        onclick(e) {
+        }
+
+        private shouldDeselectAll(target: Element): boolean {
+            if (this.selectedElements
+                && this.selectedElements.length) {
+                return this.selectedElements.some(e => e.containsElement(target));
+            }
+            return false;
+        }
+
+        private deselectAll():void {
+
+        }
 
         onmousedown(e) {
             
@@ -48,9 +57,13 @@ module markit {
                 return; // toolsettings not set
             }
 
-            if (e.which == 1) {
+            //if (this.toolSettings.commandMode === CommandMode.Select) {
+            //    this.selectedElements.forEach(s => s.unSelect());
+            //    this.selectedElements = [];
+            //}
 
-                console.log("lmb: " + this.toolSettings.commandMode);
+
+            if (e.which == 1) {
                 this.leftMouseButtonDown = true;
                 var coords = this.toLocalCoords(e.clientX, e.clientY);
 
@@ -65,7 +78,25 @@ module markit {
                 }
                 else if (this.toolSettings.commandMode == CommandMode.Arrow) {
                     this.activeElement = new Arrow(this.snap, coords, this.toolSettings);
-                }           
+                } else {
+                    // No active tool selected, or, ptr is selected.
+                    if (e.srcElement.nodeName === "line"
+                        || e.srcElement.nodeName === "ellipse") {
+                        let selectedShape = this.elements.filter(el => el.containsElement(e.srcElement))[0];
+                        if (selectedShape) {
+                            this.selectedElements.push(selectedShape);
+                        }
+                    }
+                }
+                
+                if (this.activeElement) {
+                    // this.elements[0].element.node === e.srcElement
+                    this.selectedElements.push(this.activeElement);
+                }
+
+                this.selectedElements.forEach(s =>
+                    s.select()
+                );    
             }            
         }
 
@@ -73,9 +104,7 @@ module markit {
             
             if (this.leftMouseButtonDown) {
 
-                if (typeof this.activeElement != "undefined" && this.activeElement != null) {
-
-                    console.log("mouse move - draw " + this.toolSettings.commandMode);
+                if (this.activeElement) {
                     var coords = this.toLocalCoords(e.clientX, e.clientY);
                     this.activeElement.draw(coords);
                 }                 
@@ -94,8 +123,6 @@ module markit {
         }
 
         onmouseout(e) {
-            console.log("mouse out: " + e.target.id + ", x: " + e.clientX + ", y: " + e.clientY);
-
             // containsPoint required as chrome was misfiring event while still in the canvas
             if (this.containsPoint(e.clientX, e.clientY)) {
                 console.log("mouseout misfire.");
@@ -119,7 +146,7 @@ module markit {
 
             var localX = Math.round(x - rect.left);
             var localY = Math.round(y - rect.top);
-            console.log("local coords: {x: " + localX + ", y: " + localY + "}}");            
+            //console.log("local coords: {x: " + localX + ", y: " + localY + "}}");            
             
             return {
                 x: localX,

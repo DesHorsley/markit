@@ -49,6 +49,12 @@ module markit {
             this._origin.y = Number(this._element.attr("y"));
         }
 
+        reDraw() { };
+
+        containsElement() {
+            return false;
+        }
+
         setToolSettings(settings: ToolSettings): void {
 
             super.setToolSettings(settings);

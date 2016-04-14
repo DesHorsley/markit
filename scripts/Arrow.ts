@@ -76,6 +76,14 @@ module markit {
             }
         }
 
+        reDraw() {
+
+        }
+
+        containsElement() {
+            return false;
+        }
+
         drawComplete(): void {
             this._element = this._surface.group(this.arrowHead, this.line);
         }
