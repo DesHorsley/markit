@@ -50,8 +50,17 @@ module markit {
             }
         }
 
+        reDraw() {
+            //TODO: implement
+        }
+
         drawComplete(): void {
             // not implemented
+        }
+
+        containsElement(element: any) {
+            // TODO: implement
+            return false;
         }
 
         setToolSettings(settings: ToolSettings): void {
