@@ -26,7 +26,7 @@ module markit {
             this.reDraw();
         }
 
-        public unSelect() {
+        public deselect() {
             this._selected = false;
             this.reDraw();
         }

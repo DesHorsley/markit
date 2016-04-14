@@ -42,26 +42,24 @@ module markit {
         private shouldDeselectAll(target: Element): boolean {
             if (this.selectedElements
                 && this.selectedElements.length) {
-                return this.selectedElements.some(e => e.containsElement(target));
+                return !this.selectedElements.some(e => e.containsElement(target));
             }
             return false;
         }
 
         private deselectAll():void {
-
+            this.selectedElements.forEach(e => e.deselect());
+            this.selectedElements = [];
         }
 
         onmousedown(e) {
-            
             if (typeof this.toolSettings == "undefined" || this.toolSettings == null) {
                 return; // toolsettings not set
             }
 
-            //if (this.toolSettings.commandMode === CommandMode.Select) {
-            //    this.selectedElements.forEach(s => s.unSelect());
-            //    this.selectedElements = [];
-            //}
-
+            if (this.shouldDeselectAll(e.srcElement)) {
+                this.deselectAll();
+            }
 
             if (e.which == 1) {
                 this.leftMouseButtonDown = true;
