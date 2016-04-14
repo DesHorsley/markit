@@ -8,8 +8,10 @@ module markit {
 
         protected _origin: { x: number, y: number };
         protected _element: Snap.Element;
+        protected _selectedHandles: Snap.Element[];
         protected _toolSettings: ToolSettings;
         protected _surface: Snap.Paper;
+        protected _selected: boolean;
 
         public get origin(): { x: number, y: number } {
             return this._origin;
@@ -18,11 +20,21 @@ module markit {
         public get element(): Snap.Element {
             return this._element;
         }
-       
+
+        public select() {
+            this._selected = true;
+            this.reDraw();
+        }
+
+        public deselect() {
+            this._selected = false;
+            this.reDraw();
+        }
+   
         public get toolSettings(): ToolSettings {
             return this._toolSettings;
         }        
-        
+
         constructor(surface: Snap.Paper, origin: { x: number, y: number }, toolSettings: ToolSettings) {
 
             if (typeof surface == "undefined" || surface == null) {
@@ -39,8 +51,8 @@ module markit {
 
             this._surface = surface;
             this._origin = origin;
-            this._toolSettings = toolSettings;           
-        
+            this._toolSettings = toolSettings;
+            this.select();
         }       
 
         removeElement(): void {
@@ -51,8 +63,19 @@ module markit {
             }            
         }
 
-        abstract draw(coords: { x: number, y: number }): void;
+        abstract draw(coords: { x: number, y: number }, actCoords?: any): void;
         abstract drawComplete(): void;
+
+        /**
+         * Repaints the element. Used after selecting the element to display selectHandles
+         */
+        abstract reDraw(): void;
+
+        /**
+         * Returns true if the supplie element is equal to an element that makes up the shape, or the shapes selectHandles
+         * @param element
+         */
+        abstract containsElement(element : any): boolean;
 
         setToolSettings(settings: ToolSettings): void {
         

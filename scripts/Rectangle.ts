@@ -36,8 +36,9 @@ module markit {
                     height: endpoints.height
                 });
             }
-
         }
+
+        reDraw() { }
 
         drawComplete(): void {
             if (!this._element) {
@@ -47,6 +48,10 @@ module markit {
 
             this._origin.x = Number(this._element.attr("x"));
             this._origin.y = Number(this._element.attr("y"));
+        }
+
+        containsElement() {
+            return false;
         }
 
         setToolSettings(settings: ToolSettings): void {
