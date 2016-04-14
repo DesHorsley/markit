@@ -71,6 +71,7 @@
     <TypeScriptCompile Include="scripts\ToolsManager.ts" />
     <TypeScriptCompile Include="scripts\typings\jasmine\jasmine.d.ts" />
     <TypeScriptCompile Include="UnitTests\LineTest.ts" />
+    <TypeScriptCompile Include="UnitTests\PaperTest.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
