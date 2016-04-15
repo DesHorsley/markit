@@ -1,19 +1,20 @@
 ﻿
 /// <reference path="snap/snapsvg.d.ts" />
 /// <reference path="Shape.ts" />
+/// <reference path="Point.ts" />
 /// <reference path="toolSettings.ts" />
 
 module markit {
-    interface point  { x: number, y: number };
+    
     export class Line extends Shape {
 
-        public endpoint: { x: number, y: number };
+        public endpoint: Point;
 
-        constructor(surface: Snap.Paper, origin: { x: number, y: number }, toolSettings: ToolSettings) {
+        constructor(surface: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
             super(surface, origin, toolSettings);
         }
 
-        draw(coords: { x: number, y: number }): void {
+        draw(coords: Point): void {
             if (typeof coords == "undefined" || coords == null) {
                 throw "coords parameter is required.";
             }
@@ -33,7 +34,7 @@ module markit {
             }
         }
 
-        private createElement(coords: point) {
+        private createElement(coords: Point) {
             this._element = this._surface.line(this._origin.x, this.origin.y, coords.x, coords.y);
             this._element.attr({
                 stroke: this._toolSettings.stroke,
@@ -41,14 +42,14 @@ module markit {
             });
         }
 
-        private setElementEnd(coords: point) {
+        private setElementEnd(coords: Point) {
             this._element.attr({
                 x2: coords.x,
                 y2: coords.y
             });
         }
 
-        private setHandleLocations(coords: point) {
+        private setHandleLocations(coords: Point) {
             if (!this._selectedHandles) {
                 this.createHandles();
             }

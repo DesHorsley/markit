@@ -60,6 +60,7 @@
     <TypeScriptCompile Include="scripts\ImageWrapper.ts" />
     <TypeScriptCompile Include="scripts\Line.ts" />
     <TypeScriptCompile Include="scripts\Paper.ts" />
+    <TypeScriptCompile Include="scripts\Point.ts" />
     <TypeScriptCompile Include="scripts\Rectangle.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
