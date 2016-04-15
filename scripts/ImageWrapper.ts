@@ -29,6 +29,9 @@ module markit {
             this._imageURL = imageURL;
         }
 
+        public destroy(): void {
+        }
+
         draw(coords: { x: number, y: number }): void {
 
             if (typeof coords == "undefined" || coords == null) {

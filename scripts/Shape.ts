@@ -55,6 +55,8 @@ module markit {
             this.select();
         }       
 
+        abstract destroy(): void;
+
         removeElement(): void {
             
             if (typeof this._element !== "undefined" && this._element !== null) {

@@ -20,6 +20,9 @@ module markit {
             super(surface, origin, toolSettings);
         }
 
+        public destroy(): void {
+        }
+
         draw(coords: { x: number, y: number }): void {
 
             if (typeof coords == "undefined" || coords == null) {

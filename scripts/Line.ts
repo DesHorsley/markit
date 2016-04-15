@@ -14,6 +14,9 @@ module markit {
             super(surface, origin, toolSettings);
         }
 
+        public destroy(): void {
+        }
+
         draw(coords: Point): void {
             if (typeof coords == "undefined" || coords == null) {
                 throw "coords parameter is required.";
