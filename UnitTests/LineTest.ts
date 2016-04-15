@@ -1,5 +1,6 @@
 ﻿/// <reference path="../scripts/typings/jasmine/jasmine.d.ts" />
 /// <reference path="../scripts/snap/snapsvg.d.ts" />
+/// <reference path="../scripts/Point.ts" />
 /// <reference path="../scripts/Shape.ts" />
 /// <reference path="../scripts/Line.ts" />
 /// <reference path="../scripts/Ellipse.ts" />
@@ -8,8 +9,6 @@
 /// <reference path="../scripts/ToolSettingsObserver.ts" />
 /// <reference path="../scripts/ToolSettings.ts" />
 // chutzpah-exclude="true"
-
-/// <reference path="../scripts/Line.ts" />
 
 describe("Line constructor unit tests", function () {
     
