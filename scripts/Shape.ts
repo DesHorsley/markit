@@ -22,11 +22,14 @@ module markit {
         }
 
         public select() {
+            console.log("base select called.");
+
             this._selected = true;
             this.reDraw();
         }
 
         public deselect() {
+            console.log("base deselect called.");
             this._selected = false;
             this.reDraw();
         }
@@ -51,8 +54,7 @@ module markit {
 
             this._surface = surface;
             this._origin = origin;
-            this._toolSettings = toolSettings;
-            this.select();
+            this._toolSettings = toolSettings;          
         }       
 
         abstract destroy(): void;

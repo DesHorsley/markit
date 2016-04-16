@@ -29,7 +29,7 @@ module markit {
             this.svg.onmousemove = this.onmousemove.bind(this);
             this.svg.onmouseup = this.onmouseup.bind(this);
             this.svg.onmouseout = this.onmouseout.bind(this);
-
+            
             this.activeElement = null;
             this.selectedElements = [];
             this.leftMouseButtonDown = false;
@@ -37,6 +37,22 @@ module markit {
         }
 
         onclick(e) {
+            e = e || window.event;
+
+            let element = Snap.getElementByPoint(e.clientX, e.clientY);
+            let shapes = this.elements.filter(el => el.containsElement(element));
+            console.log("shapes found: " + shapes.length);
+            if (shapes.length === 1) {
+                if (!e.ctrlKey) {
+                    this.deselectAll();
+                }
+                shapes[0].select();
+                let selected = this.selectedElements.filter(el => el === shapes[0]);
+                console.log("selected shapes found: " + selected.length);
+                if (selected.length === 0) {
+                    this.selectedElements.push(shapes[0]);
+                }                
+            }
         }
 
         private shouldDeselectAll(target: Element): boolean {
@@ -57,49 +73,34 @@ module markit {
                 return; // toolsettings not set
             }
 
-            if (this.shouldDeselectAll(e.srcElement)) {
+            if (this.toolSettings.commandMode !== CommandMode.Select) {
                 this.deselectAll();
-            }
+                if (e.which == 1) {
+                    this.leftMouseButtonDown = true;
+                    var coords = this.toLocalCoords(e.clientX, e.clientY);
 
-            if (e.which == 1) {
-                this.leftMouseButtonDown = true;
-                var coords = this.toLocalCoords(e.clientX, e.clientY);
+                    if (this.toolSettings.commandMode == CommandMode.Line) {
+                        this.activeElement = new Line(this.snap, coords, this.toolSettings);
+                    }
+                    else if (this.toolSettings.commandMode == CommandMode.Rectangle) {
+                        this.activeElement = new Rectangle(this.snap, coords, this.toolSettings);
+                    }
+                    else if (this.toolSettings.commandMode == CommandMode.Ellipse) {
+                        this.activeElement = new Ellipse(this.snap, coords, this.toolSettings);
+                    }
+                    else if (this.toolSettings.commandMode == CommandMode.Arrow) {
+                        this.activeElement = new Arrow(this.snap, coords, this.toolSettings);
+                    }
 
-                if (this.toolSettings.commandMode == CommandMode.Line) {
-                    this.activeElement = new Line(this.snap, coords, this.toolSettings);
-                }
-                else if (this.toolSettings.commandMode == CommandMode.Rectangle) {
-                    this.activeElement = new Rectangle(this.snap, coords, this.toolSettings);
-                }
-                else if (this.toolSettings.commandMode == CommandMode.Ellipse) {
-                    this.activeElement = new Ellipse(this.snap, coords, this.toolSettings);
-                }
-                else if (this.toolSettings.commandMode == CommandMode.Arrow) {
-                    this.activeElement = new Arrow(this.snap, coords, this.toolSettings);
-                } else {
-                    // No active tool selected, or, ptr is selected.
-                    if (e.srcElement.nodeName === "line"
-                        || e.srcElement.nodeName === "ellipse") {
-                        let selectedShape = this.elements.filter(el => el.containsElement(e.srcElement))[0];
-                        if (selectedShape) {
-                            this.selectedElements.push(selectedShape);
-                        }
+                    if (this.activeElement) {
+                        this.selectedElements.push(this.activeElement);
+                        this.activeElement.select();
                     }
                 }
-                
-                if (this.activeElement) {
-                    // this.elements[0].element.node === e.srcElement
-                    this.selectedElements.push(this.activeElement);
-                }
-
-                this.selectedElements.forEach(s =>
-                    s.select()
-                );    
-            }            
+            }                                   
         }
 
         onmousemove(e) {
-
             if (this.leftMouseButtonDown) {
 
                 if (this.activeElement) {
@@ -131,7 +132,7 @@ module markit {
             if (this.leftMouseButtonDown) {
                 this.leftMouseButtonDown = false;
                 if (typeof this.activeElement != "undefined" && this.activeElement != null) {
-                    this.activeElement.removeElement();
+                    this.activeElement.destroy();
                     this.activeElement = null;
                 }
             }
@@ -140,8 +141,6 @@ module markit {
         toLocalCoords(x: number, y: number) {
 
             var rect = this.svg.getBoundingClientRect();
-            //console.log("Bounding rectangle: left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
-
             var localX = Math.round(x - rect.left);
             var localY = Math.round(y - rect.top);
 
@@ -160,11 +159,9 @@ module markit {
         }
 
         addImage(imageURL: URL): void {
-
             var image = new ImageWrapper(this.snap, { x: 0, y: 0 }, this.toolSettings, imageURL);
             image.draw({ x: 0, y: 0 });
             this.elements.push(image);            
         }
-
     }
 }

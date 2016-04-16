@@ -12,9 +12,13 @@ module markit {
 
         constructor(surface: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
             super(surface, origin, toolSettings);
+            this.endpoint = origin;
+            this._selectedHandles = [];
         }
 
         public destroy(): void {
+            this.removeHandles();
+            this.removeLine();
         }
 
         draw(coords: Point): void {
@@ -25,79 +29,108 @@ module markit {
             this.endpoint = coords;
 
             if (!this._element) {
-                this.createElement(coords);
+                this.createLine();
+                if (this._selected) {
+                    this.createHandles();
+                }
             } else {
-                this.setElementEnd(coords);
-            }
-
-            if (this._selected) {
-                this.setHandleLocations(coords);
-            } else {
-                this.removeHandles();
-            }
+                this.setLineCoordinates();
+                if (this._selected) {
+                    this.setHandleEndpoints(); 
+                }
+            }            
         }
 
-        private createElement(coords: Point) {
-            this._element = this._surface.line(this._origin.x, this.origin.y, coords.x, coords.y);
+        private createLine(): void {
+            this._element = this._surface.line(this._origin.x, this.origin.y, this.endpoint.x, this.endpoint.y);
             this._element.attr({
                 stroke: this._toolSettings.stroke,
                 strokeWidth: this._toolSettings.strokeWidth
             });
         }
 
-        private setElementEnd(coords: Point) {
-            this._element.attr({
-                x2: coords.x,
-                y2: coords.y
-            });
-        }
+        private createHandles(): void {                    
 
-        private setHandleLocations(coords: Point) {
-            if (!this._selectedHandles) {
-                this.createHandles();
-            }
-
-            // Set end handle
-            this._selectedHandles[1].transform("t" + (coords.x - this._origin.x) + "," + (coords.y - this._origin.y));
-        }
-
-        reDraw() {
-            if (this.endpoint) {
-                this.draw(this.endpoint);
-            }
-        }
-
-        public containsElement(element: HTMLElement): boolean {
-            let shapesElements 
-            if (this._selectedHandles) {
-                shapesElements = this._selectedHandles.slice();
-            } else {
-                shapesElements = [];
-            }
-
-            if (shapesElements) {
-                shapesElements.push(this._element);
-            } else {
-                shapesElements = [this._element];
-            }
-
-            return shapesElements.filter(e => e.node === element).length > 0;
-        }
-
-        private createHandles(): void {
-            this._selectedHandles = [];
-
+            console.log("createHandles starting...");
             // Start handle
             this._selectedHandles.push(this._surface.ellipse(this._origin.x, this.origin.y, 5, 5));
             // End handle
-            this._selectedHandles.push(this._surface.ellipse(this._origin.x, this.origin.y, 5, 5));
+            this._selectedHandles.push(this._surface.ellipse(this.endpoint.x, this.endpoint.y, 5, 5));
+
+            this._selectedHandles[0].attr({
+                fill: "#C0C0C0"
+            });
+
+            this._selectedHandles[1].attr({
+                fill: "#C0C0C0"
+            });                       
+        }
+
+        private setLineCoordinates(): void {
+            this._element.attr({
+                x1: this.origin.x,
+                y1: this.origin.y,
+                x2: this.endpoint.x,
+                y2: this.endpoint.y
+            });
+        }
+
+        private setHandleEndpoints(): void {
+            this._selectedHandles[0].attr({
+                cx: this.origin.x,
+                cy: this.origin.y
+            });
+
+            this._selectedHandles[1].attr({
+                cx: this.endpoint.x,
+                cy: this.endpoint.y
+            });           
+        }
+
+        public select(): void {
+            console.log("select called.");
+            if (!this._selected) {
+                this._selected = true;
+                if (this._element) {
+                    this.createHandles();
+                }
+            }            
+        }
+
+        public deselect(): void {
+            console.log("deselect called.");
+            if (this._selected) {
+                this.removeHandles();
+                this._selected = false;
+            }           
+        }
+       
+        reDraw() {
+        }
+
+        public containsElement(element: Snap.Element): boolean {
+            if (this._selectedHandles) {
+                if (this._selectedHandles[0] === element || this._selectedHandles[1] === element) {
+                    return true;
+                }
+            }
+
+            return this._element === element;           
+        }
+
+        private removeLine(): void {
+            this._element.remove();
+            // TODO remove any event handlers
+            this._element = null;
         }
 
         private removeHandles(): void {
-            if (this._selectedHandles) {
-                this._selectedHandles.forEach(s => s.remove());
-                this._selectedHandles = null;
-            }
+            while (this._selectedHandles.length > 0) {
+                let handle = this._selectedHandles.pop();
+                handle.remove();
+                
+                // TODO: remove any event handlers                
+            }           
         }
 
         drawComplete(): void {
