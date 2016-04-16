@@ -7,14 +7,14 @@ module markit {
 
     export class Rectangle extends Shape {
         
-        constructor(surface: Snap.Paper, origin: { x: number, y: number }, toolSettings: ToolSettings) {
+        constructor(surface: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
             super(surface, origin, toolSettings);
         }
 
         public destroy(): void {
         }
 
-        draw(coords: { x: number, y: number }) {
+        draw(coords: Point) {
 
             if (typeof coords == "undefined" || coords == null) {
                 throw "coords parameter is required.";
@@ -68,7 +68,7 @@ module markit {
             });            
         }
 
-        private getEndpoints(coords: { x: number, y: number }): { x: number, y: number, width: number, height: number } {
+        private getEndpoints(coords: Point): { x: number, y: number, width: number, height: number } {
 
             var endpoints = {
                 x: coords.x < this._origin.x ? coords.x : this._origin.x,

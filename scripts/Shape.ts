@@ -6,7 +6,7 @@ module markit {
 
     export abstract class Shape {
 
-        protected _origin: { x: number, y: number };
+        protected _origin: Point;
         protected _element: Snap.Element;
         protected _selectedHandles: Snap.Element[];
         protected _toolSettings: ToolSettings;
@@ -38,7 +38,7 @@ module markit {
             return this._toolSettings;
         }        
 
-        constructor(surface: Snap.Paper, origin: { x: number, y: number }, toolSettings: ToolSettings) {
+        constructor(surface: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
 
             if (typeof surface == "undefined" || surface == null) {
                 throw "surface parameter is required.";

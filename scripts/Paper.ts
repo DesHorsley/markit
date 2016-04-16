@@ -138,7 +138,7 @@ module markit {
             }
         }
 
-        toLocalCoords(x: number, y: number) {
+        toLocalCoords(x: number, y: number) : Point {
 
             var rect = this.svg.getBoundingClientRect();
             var localX = Math.round(x - rect.left);

@@ -11,19 +11,19 @@ module markit {
 
     export class Arrow extends Shape {
 
-        private previousEndPoint: { x: number, y: number };
+        private previousEndPoint: Point;
 
         protected arrowHead: Snap.Element;
         protected line: Snap.Element;
 
-        constructor(surface: Snap.Paper, origin: { x: number, y: number }, toolSettings: ToolSettings) {
+        constructor(surface: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
             super(surface, origin, toolSettings);
         }
 
         public destroy(): void {
         }
 
-        draw(coords: { x: number, y: number }): void {
+        draw(coords: Point): void {
 
             if (typeof coords == "undefined" || coords == null) {
                 throw "coords parameter is required.";
@@ -116,7 +116,7 @@ module markit {
             }
         }
 
-        private calculateAngle(coords: { x: number, y: number }): number {
+        private calculateAngle(coords: Point): number {
 
             let dX = coords.x - this.origin.x;
             let dY = coords.y - this.origin.y;
@@ -124,7 +124,7 @@ module markit {
             return Math.round(angle);
         }
 
-        private getPoints(coords: { x: number, y: number }): string {
+        private getPoints(coords: Point): string {
 
             let points = [];
             let vertices = this.getVertices(coords);
@@ -138,7 +138,7 @@ module markit {
             return str;
         }
 
-        private getVertices(coords: { x: number, y: number }): number[][] {
+        private getVertices(coords: Point): number[][] {
 
             var vertices = [
                 [coords.x, coords.y - 10],
@@ -149,7 +149,7 @@ module markit {
             return vertices;
         }
 
-        private getMidPoint(vertices: number[][]): { x: number, y: number } {
+        private getMidPoint(vertices: number[][]): Point {
                     
             let midpoint;
             let mX = Math.round((vertices[0][0] + vertices[1][0] + vertices[2][0]) / 3);

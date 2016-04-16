@@ -23,7 +23,7 @@ module markit {
             return this._height;
         }
 
-        constructor(surface: Snap.Paper, origin: { x: number, y: number }, toolSettings: ToolSettings,
+        constructor(surface: Snap.Paper, origin: Point, toolSettings: ToolSettings,
             imageURL: URL) {
             super(surface, origin, toolSettings);
             this._imageURL = imageURL;
@@ -32,7 +32,7 @@ module markit {
         public destroy(): void {
         }
 
-        draw(coords: { x: number, y: number }): void {
+        draw(coords: Point): void {
 
             if (typeof coords == "undefined" || coords == null) {
                 throw "coords parameter is required.";
