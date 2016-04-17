@@ -15,7 +15,11 @@ module markit {
         public get toolSettings(): ToolSettings {
             return this._toolSettings;
         }
-        
+
+        public get selected(): boolean {
+            return this._selected;
+        }
+
         public set toolSettings(settings: ToolSettings) {
             if (typeof settings == "undefined" || settings == null) {
                 throw "settings required.";
