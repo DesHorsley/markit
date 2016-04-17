@@ -3,6 +3,7 @@
 /// <reference path="Shape.ts" />
 /// <reference path="Point.ts" />
 /// <reference path="toolSettings.ts" />
+/// <reference path="IShapeObserver.ts" />
 
 module markit {
     
@@ -10,8 +11,8 @@ module markit {
 
         public endpoint: Point;
 
-        constructor(surface: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
-            super(surface, origin, toolSettings);
+        constructor(observer: IShapeObserver, origin: Point, toolSettings: ToolSettings) {
+            super(observer, origin, toolSettings);
             this.endpoint = origin;
             this._selectedHandles = [];
         }
@@ -42,7 +43,8 @@ module markit {
         }
 
         private createLine(): void {
-            this._element = this._surface.line(this._origin.x, this.origin.y, this.endpoint.x, this.endpoint.y);
+            console.log("Line.createLine called.");
+            this._element = this._observer.paper.line(this._origin.x, this.origin.y, this.endpoint.x, this.endpoint.y);
             this._element.attr({
                 stroke: this._toolSettings.stroke,
                 strokeWidth: this._toolSettings.strokeWidth
@@ -53,9 +55,9 @@ module markit {
 
             console.log("createHandles starting...");
             // Start handle
-            this._selectedHandles.push(this._surface.ellipse(this._origin.x, this.origin.y, 5, 5));
+            this._selectedHandles.push(this._observer.paper.ellipse(this._origin.x, this.origin.y, 5, 5));
             // End handle
-            this._selectedHandles.push(this._surface.ellipse(this.endpoint.x, this.endpoint.y, 5, 5));
+            this._selectedHandles.push(this._observer.paper.ellipse(this.endpoint.x, this.endpoint.y, 5, 5));
 
             this._selectedHandles[0].attr({
                 fill: "#C0C0C0"
@@ -67,6 +69,7 @@ module markit {
         }
 
         private setLineCoordinates(): void {
+            console.log("Line.setLineCoordinates called.");
             this._element.attr({
                 x1: this.origin.x,
                 y1: this.origin.y,
@@ -76,6 +79,7 @@ module markit {
         }
 
         private setHandleEndpoints(): void {
+            console.log("Line.setHandleEndpoints called.");
             this._selectedHandles[0].attr({
                 cx: this.origin.x,
                 cy: this.origin.y
@@ -136,14 +140,11 @@ module markit {
         drawComplete(): void {
         }
 
-        setToolSettings(settings: ToolSettings): void {
-
-            super.setToolSettings(settings);
+        protected setToolSettings(): void {
 
             this._element.attr({
-                stroke: this._toolSettings.stroke,
-                strokeWidth: this._toolSettings.strokeWidth,
-                fill: this._toolSettings.fill
+                stroke: this.toolSettings.stroke,
+                strokeWidth: this.toolSettings.strokeWidth                
             });            
         }
         

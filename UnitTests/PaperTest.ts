@@ -23,14 +23,13 @@ describe("mousemove unit tests", function () {
 
     it("Draws a line from 10,10 to 20,10", function () {
 
-        var snapPaper = Snap(svg);
         var toolSettings = new markit.ToolSettings();
         toolSettings.commandMode = markit.CommandMode.Line;
         toolSettings.stroke = "#000";
         toolSettings.strokeWidth = 1;
         var paper = new markit.Paper(svg);
         paper["leftMouseButtonDown"] = true;
-        paper["activeElement"] = new markit.Line(snapPaper, { x: 10, y: 10 }, toolSettings);
+        paper["activeElement"] = new markit.Line(paper, { x: 10, y: 10 }, toolSettings);
         paper.toolSettings = toolSettings;
         spyOn(paper, "toLocalCoords").and.returnValue({ x: 20, y: 10 });
 

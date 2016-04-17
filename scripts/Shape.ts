@@ -1,6 +1,5 @@
 ﻿
 /// <reference path="snap/snapsvg.d.ts" />
-/// <reference path="ToolSettings.ts" />
 
 module markit {
 
@@ -9,9 +8,21 @@ module markit {
         protected _origin: Point;
         protected _element: Snap.Element;
         protected _selectedHandles: Snap.Element[];
-        protected _toolSettings: ToolSettings;
-        protected _surface: Snap.Paper;
+        protected _observer: IShapeObserver;
         protected _selected: boolean;
+        protected _toolSettings: ToolSettings;
+
+        public get toolSettings(): ToolSettings {
+            return this._toolSettings;
+        }
+        
+        public set toolSettings(settings: ToolSettings) {
+            if (typeof settings == "undefined" || settings == null) {
+                throw "settings required.";
+            }
+            this._toolSettings = settings;
+            this.setToolSettings();
+        }
 
         public get origin(): { x: number, y: number } {
             return this._origin;
@@ -34,14 +45,10 @@ module markit {
             this.reDraw();
         }
    
-        public get toolSettings(): ToolSettings {
-            return this._toolSettings;
-        }        
+        constructor(observer: IShapeObserver, origin: Point, toolSettings: ToolSettings) {
 
-        constructor(surface: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
-
-            if (typeof surface == "undefined" || surface == null) {
-                throw "surface parameter is required.";
+            if (typeof observer == "undefined" || observer == null) {
+                throw "observer parameter is required.";
             }
 
             if (typeof origin == "undefined" || origin == null) {
@@ -52,9 +59,9 @@ module markit {
                 throw "toolSettings parameter is required.";
             }
 
-            this._surface = surface;
-            this._origin = origin;
-            this._toolSettings = toolSettings;          
+            this._toolSettings = toolSettings;
+            this._observer = observer;
+            this._origin = origin;                      
         }       
 
         abstract destroy(): void;
@@ -79,16 +86,9 @@ module markit {
          * Returns true if the supplie element is equal to an element that makes up the shape, or the shapes selectHandles
          * @param element
          */
-        abstract containsElement(element : any): boolean;
+        abstract containsElement(element: any): boolean;
 
-        setToolSettings(settings: ToolSettings): void {
-        
-            if (typeof settings == "undefined" || settings == null) {
-                throw "settings parameter is required.";
-            }
-
-            this._toolSettings = settings;
-        }
+        protected abstract setToolSettings(): void;
 
     }
     

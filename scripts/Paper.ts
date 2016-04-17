@@ -9,11 +9,25 @@
 
 module markit {
 
-    export class Paper {
+    export class Paper implements IShapeObserver {
 
-        private snap: Snap.Paper;
-        public toolSettings: ToolSettings;
+        get toolSettings(): ToolSettings {
+            return this._toolSettings;
+        }
 
+        set toolSettings(settings: ToolSettings) {
+            if (typeof settings == "undefined" || settings == null) {
+                throw "settings is required.";
+            }
+            this._toolSettings = settings;
+        }
+
+        public get paper(): Snap.Paper {
+            return this._paper;
+        }            
+
+        private _paper: Snap.Paper;
+        private _toolSettings: ToolSettings;
         private activeElement: Shape;
         private selectedElements: Shape[];
         private leftMouseButtonDown: boolean;
@@ -23,7 +37,7 @@ module markit {
         constructor(svg: SVGElement) {
 
             this.svg = svg;
-            this.snap = Snap(svg);
+            this._paper = Snap(svg);
             this.svg.onclick = this.onclick.bind(this);
             this.svg.onmousedown = this.onmousedown.bind(this);
             this.svg.onmousemove = this.onmousemove.bind(this);
@@ -34,6 +48,9 @@ module markit {
             this.selectedElements = [];
             this.leftMouseButtonDown = false;
             this.elements = new Array<Shape>();
+        }
+
+        public shapeSelected(shape: Shape): void {
         }
 
         onclick(e) {
@@ -72,24 +89,25 @@ module markit {
             if (typeof this.toolSettings == "undefined" || this.toolSettings == null) {
                 return; // toolsettings not set
             }
-
+            
             if (this.toolSettings.commandMode !== CommandMode.Select) {
                 this.deselectAll();
                 if (e.which == 1) {
+                     
                     this.leftMouseButtonDown = true;
                     var coords = this.toLocalCoords(e.clientX, e.clientY);
 
                     if (this.toolSettings.commandMode == CommandMode.Line) {
-                        this.activeElement = new Line(this.snap, coords, this.toolSettings);
+                        this.activeElement = new Line(this, coords, this.toolSettings);
                     }
                     else if (this.toolSettings.commandMode == CommandMode.Rectangle) {
-                        this.activeElement = new Rectangle(this.snap, coords, this.toolSettings);
+                        this.activeElement = new Rectangle(this, coords, this.toolSettings);
                     }
                     else if (this.toolSettings.commandMode == CommandMode.Ellipse) {
-                        this.activeElement = new Ellipse(this.snap, coords, this.toolSettings);
+                        this.activeElement = new Ellipse(this, coords, this.toolSettings);
                     }
                     else if (this.toolSettings.commandMode == CommandMode.Arrow) {
-                        this.activeElement = new Arrow(this.snap, coords, this.toolSettings);
+                        this.activeElement = new Arrow(this, coords, this.toolSettings);
                     }
 
                     if (this.activeElement) {
@@ -159,7 +177,7 @@ module markit {
         }
 
         addImage(imageURL: URL): void {
-            var image = new ImageWrapper(this.snap, { x: 0, y: 0 }, this.toolSettings, imageURL);
+            var image = new ImageWrapper(this, { x: 0, y: 0 }, this.toolSettings, imageURL);
             image.draw({ x: 0, y: 0 });
             this.elements.push(image);            
         }

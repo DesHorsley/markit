@@ -7,8 +7,8 @@ module markit {
 
     export class Rectangle extends Shape {
         
-        constructor(surface: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
-            super(surface, origin, toolSettings);
+        constructor(observer: IShapeObserver, origin: Point, toolSettings: ToolSettings) {
+            super(observer, origin, toolSettings);
         }
 
         public destroy(): void {
@@ -24,7 +24,7 @@ module markit {
 
             if (typeof this._element == "undefined" || this._element == null) {
 
-                this._element = this._surface.rect(endpoints.x, endpoints.y, endpoints.width, endpoints.height);
+                this._element = this._observer.paper.rect(endpoints.x, endpoints.y, endpoints.width, endpoints.height);
                 this._element.attr({
                     stroke: this._toolSettings.stroke,
                     strokeWidth: this._toolSettings.strokeWidth,
@@ -57,10 +57,7 @@ module markit {
             return false;
         }
 
-        setToolSettings(settings: ToolSettings): void {
-
-            super.setToolSettings(settings);
-
+        protected setToolSettings(): void {
             this._element.attr({
                 stroke: this._toolSettings.stroke,
                 strokeWidth: this._toolSettings.strokeWidth,
