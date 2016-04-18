@@ -50,12 +50,33 @@ module markit {
             this.elements = new Array<Shape>();
         }
 
-        public shapeSelected(shape: Shape): void {
+        public shapeSelected(shape: Shape, allowMultiple: boolean): void {
+            console.log("Paper.shapeSelected called: allowmultiple: " + 
+                (allowMultiple ? "true" : "false") + ", selectedElements count: " + this.selectedElements.length);
+            if (allowMultiple) {
+                if (!this.selectedElements.some(s => s === shape)) {
+                    this.selectedElements.push(shape);
+                    console.log("Paper.shapeSelected...shape pushed.");
+                } else {
+                    console.log("Paper.shapeSelected. shape already in list.");
+                }
+                console.log("Paper.shapeSelected: selectedElements count: " + this.selectedElements.length);
+            } else {
+                if (this.selectedElements.some(s => s === shape)) {
+                    this.deselectAllExcept(shape);
+                } else {
+                    this.deselectAll();
+                    this.selectedElements.push(shape);
+                }               
+            }
+            console.log("Paper.shapeSelected: selectedElements count: " + this.selectedElements.length);
         }
 
         onclick(e) {
             e = e || window.event;
-
+            console.log("paper.onclick called.");
+            //this.deselectAll();
+            /*
             let element = Snap.getElementByPoint(e.clientX, e.clientY);
             let shapes = this.elements.filter(el => el.containsElement(element));
             console.log("shapes found: " + shapes.length);
@@ -70,6 +91,26 @@ module markit {
                     this.selectedElements.push(shapes[0]);
                 }                
             }
+            */
+        }
+
+        private deselectAllExcept(shape: Shape): void {
+            console.log("Paper.deselectAllExcept called.");
+            let remove = [];
+            this.selectedElements.forEach(function (s) {
+                if (s !== shape) {
+                    remove.push(s);
+                    s.deselect();
+                }
+            }, this);
+
+            remove.forEach(function (s) {
+                let index = this.selectedElements.indexOf(s);
+                if (index > -1) {
+                    this.selectedElements = this.selectedElements.splice(index, 1);
+                }
+            }, this);
+            console.log("Paper.deselectAllExcept: selectedElements count: " + this.selectedElements.length);            
         }
 
         private shouldDeselectAll(target: Element): boolean {
@@ -91,7 +132,7 @@ module markit {
             }
             
             if (this.toolSettings.commandMode !== CommandMode.Select) {
-                this.deselectAll();
+               // this.deselectAll();
                 if (e.which == 1) {
                      
                     this.leftMouseButtonDown = true;
@@ -110,10 +151,12 @@ module markit {
                         this.activeElement = new Arrow(this, coords, this.toolSettings);
                     }
 
+                    /*
                     if (this.activeElement) {
                         this.selectedElements.push(this.activeElement);
                         this.activeElement.select();
                     }
+                    */
                 }
             }                                   
         }
@@ -129,21 +172,30 @@ module markit {
         }
 
         onmouseup(e) {
+            e.stopImmediatePropagation();
             this.leftMouseButtonDown = false;
             if (typeof this.activeElement == "undefined" || this.activeElement == null) {
                 return;
             }
-
-            this.activeElement.drawComplete();
-            this.elements.push(this.activeElement);
-            this.activeElement = null;
+            console.log("paper.onmouseup called.");
+            if (typeof this.activeElement.element == "undefined" || this.activeElement.element == null) {
+                this.activeElement = null;
+            }
+            else {
+                e.stopImmediatePropagation();               
+                this.activeElement.drawComplete();
+                this.elements.push(this.activeElement);
+                this.activeElement.select();
+                this.shapeSelected(this.activeElement, false);                
+                this.activeElement = null;
+            }            
         }
 
         onmouseout(e) {
             // containsPoint required as chrome was misfiring event while still in the canvas
             if (this.containsPoint(e.clientX, e.clientY)) {
                 console.log("mouseout misfire.");
-                e.stopPropagation();
+                e.stopImmediatePropagation();
                 return;
             }
 

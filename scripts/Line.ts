@@ -92,17 +92,17 @@ module markit {
         }
 
         public select(): void {
-            console.log("select called.");
+            console.log("Line.select called.");
             if (!this._selected) {
                 this._selected = true;
                 if (this._element) {
                     this.createHandles();
                 }
-            }            
+            }                        
         }
 
         public deselect(): void {
-            console.log("deselect called.");
+            console.log("Line.deselect called.");
             if (this._selected) {
                 this.removeHandles();
                 this._selected = false;
@@ -124,7 +124,7 @@ module markit {
 
         private removeLine(): void {
             this._element.remove();
-            // TODO remove any event handlers
+            this._element.unclick(this.onclick);
             this._element = null;
         }
 
@@ -138,6 +138,8 @@ module markit {
         }
 
         drawComplete(): void {
+            this.select();
+            this.element.click(this.onclick, this);
         }
 
         protected setToolSettings(): void {
@@ -147,7 +149,14 @@ module markit {
                 strokeWidth: this.toolSettings.strokeWidth                
             });            
         }
-        
+
+        protected onclick(e: MouseEvent): void {
+
+            console.log("Line.onclick called.");
+            e.stopImmediatePropagation();
+            this.select();
+            this._observer.shapeSelected(this, e.ctrlKey);
+        }
     }
 }
 
