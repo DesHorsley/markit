@@ -8,8 +8,8 @@ module markit {
     export class Ellipse extends Shape {
 
         
-        constructor(observer: IShapeObserver, origin: Point, toolSettings: ToolSettings) {
-            super(observer, origin, toolSettings);  
+        constructor(context: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
+            super(context, origin, toolSettings);  
         }
 
         public destroy(): void {
@@ -25,7 +25,7 @@ module markit {
 
             if (typeof this._element == "undefined" || this._element == null) {
 
-                this._element = this._observer.paper.ellipse(endpoints.x, endpoints.y, endpoints.rx, endpoints.ry);
+                this._element = this.paper.ellipse(endpoints.x, endpoints.y, endpoints.rx, endpoints.ry);
                 this._element.attr({
                     stroke: this._toolSettings.stroke,
                     strokeWidth: this._toolSettings.strokeWidth,

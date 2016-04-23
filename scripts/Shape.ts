@@ -8,7 +8,7 @@ module markit {
         protected _origin: Point;
         protected _element: Snap.Element;
         protected _selectedHandles: Snap.Element[];
-        protected _observer: IShapeObserver;
+        protected _paper: Snap.Paper;
         protected _selected: boolean;
         protected _toolSettings: ToolSettings;
 
@@ -28,6 +28,10 @@ module markit {
             this.setToolSettings();
         }
 
+        protected get paper(): Snap.Paper {
+            return this._paper;
+        }
+
         public get origin(): { x: number, y: number } {
             return this._origin;
         }
@@ -38,21 +42,18 @@ module markit {
 
         public select() {
             console.log("base select called.");
-
-            this._selected = true;
-            this.reDraw();
+            this._selected = true;            
         }
 
         public deselect() {
             console.log("base deselect called.");
-            this._selected = false;
-            this.reDraw();
+            this._selected = false;            
         }
    
-        constructor(observer: IShapeObserver, origin: Point, toolSettings: ToolSettings) {
+        constructor(paper: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
 
-            if (typeof observer == "undefined" || observer == null) {
-                throw "observer parameter is required.";
+            if (typeof paper == "undefined" || paper == null) {
+                throw "paper parameter is required.";
             }
 
             if (typeof origin == "undefined" || origin == null) {
@@ -64,7 +65,7 @@ module markit {
             }
 
             this._toolSettings = toolSettings;
-            this._observer = observer;
+            this._paper = paper;
             this._origin = origin;                      
         }       
 
@@ -81,19 +82,21 @@ module markit {
         abstract draw(coords: { x: number, y: number }, actCoords?: any): void;
         abstract drawComplete(): void;
 
-        /**
-         * Repaints the element. Used after selecting the element to display selectHandles
-         */
-        abstract reDraw(): void;
+        public redraw(mode: string, offset: Point, handleIndex?: number): void {
+        }
 
         /**
          * Returns true if the supplie element is equal to an element that makes up the shape, or the shapes selectHandles
          * @param element
          */
-        abstract containsElement(element: any): boolean;
+        abstract containsElement(element: Element): boolean;
 
         protected abstract setToolSettings(): void;
-
+        
+        public handleIndex(element: Element): number {
+            return -1;
+        }
+       
     }
     
 }

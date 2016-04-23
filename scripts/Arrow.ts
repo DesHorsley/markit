@@ -16,8 +16,8 @@ module markit {
         protected arrowHead: Snap.Element;
         protected line: Snap.Element;
 
-        constructor(observer: IShapeObserver, origin: Point, toolSettings: ToolSettings) {
-            super(observer, origin, toolSettings);
+        constructor(paper: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
+            super(paper, origin, toolSettings);
         }
 
         public destroy(): void {
@@ -34,7 +34,7 @@ module markit {
                 var vertices = this.getVertices(this.origin);
                 var angle = this.calculateAngle(coords);
                 
-                this.arrowHead = this._observer.paper.polygon(vertices);
+                this.arrowHead = this.paper.polygon(vertices);
 
                 this.arrowHead.attr({
                     points: this.getPoints(coords)
@@ -52,7 +52,7 @@ module markit {
                     fill: this._toolSettings.stroke
                 });
 
-                this.line = this._observer.paper.line(this.origin.x, this.origin.y, centre.x, centre.y);
+                this.line = this.paper.line(this.origin.x, this.origin.y, centre.x, centre.y);
                 this.line.attr({
                     stroke: this._toolSettings.stroke,
                     strokeWidth: this._toolSettings.strokeWidth
@@ -88,7 +88,7 @@ module markit {
         }
 
         drawComplete(): void {
-            this._element = this._observer.paper.group(this.arrowHead, this.line);
+            this._element = this.paper.group(this.arrowHead, this.line);
         }
 
         protected setToolSettings(): void {

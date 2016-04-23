@@ -23,9 +23,9 @@ module markit {
             return this._height;
         }
 
-        constructor(observer: IShapeObserver, origin: Point, toolSettings: ToolSettings,
+        constructor(paper: Snap.Paper, origin: Point, toolSettings: ToolSettings,
             imageURL: URL) {
-            super(observer, origin, toolSettings);
+            super(paper, origin, toolSettings);
             this._imageURL = imageURL;
         }
 
@@ -45,7 +45,7 @@ module markit {
                 this._width = image.width
                 this._height = image.height;
 
-                this._element = this._observer.paper.image(this._imageURL.toString(), coords.x, coords.y, this._width, this._height);
+                this._element = this.paper.image(this._imageURL.toString(), coords.x, coords.y, this._width, this._height);
                 
             }
             else {

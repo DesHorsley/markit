@@ -28,8 +28,8 @@ describe("mousemove unit tests", function () {
         toolSettings.stroke = "#000";
         toolSettings.strokeWidth = 1;
         var paper = new markit.Paper(svg);
-        paper["leftMouseButtonDown"] = true;
-        paper["activeElement"] = new markit.Line(paper, { x: 10, y: 10 }, toolSettings);
+        
+        paper["activeElement"] = new markit.Line(paper.paper, { x: 10, y: 10 }, toolSettings);
         paper.toolSettings = toolSettings;
         spyOn(paper, "toLocalCoords").and.returnValue({ x: 20, y: 10 });
 
@@ -37,12 +37,14 @@ describe("mousemove unit tests", function () {
         // coordinates we want
         var e = {
             clientX: 50,
-            clientY: 50
+            clientY: 50,
+            which: 1,
+            altKey: false
         };
-
+                
         // run the test
-        paper.onmousemove(e);
-
+        paper["onmousemove"](<MouseEvent> e);
+        
         var x1 = paper["activeElement"].element.attr("x1");
         var x2 = paper["activeElement"].element.attr("x2");
         var y1 = paper["activeElement"].element.attr("y1");
