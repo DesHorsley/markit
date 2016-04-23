@@ -7,7 +7,8 @@ module markit {
 
     export class Ellipse extends Shape {
 
-        
+        private _rect: Rect;
+
         constructor(context: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
             super(context, origin, toolSettings);  
         }
@@ -21,25 +22,42 @@ module markit {
                 throw "coords parameter is required.";
             }
 
-            var endpoints = this.getEndpoints(coords);
-
+            this._rect = this.getBounds(coords);
+            
             if (typeof this._element == "undefined" || this._element == null) {
-
-                this._element = this.paper.ellipse(endpoints.x, endpoints.y, endpoints.rx, endpoints.ry);
-                this._element.attr({
-                    stroke: this._toolSettings.stroke,
-                    strokeWidth: this._toolSettings.strokeWidth,
-                    fill: this._toolSettings.fill
-                });
+                this.createEllipse();               
             }
             else {
-                this._element.attr({
-                    x: endpoints.x,
-                    y: endpoints.y,
-                    rx: endpoints.rx,
-                    ry: endpoints.ry
-                });
+                this.setEllipseCoords();
             }
+        }
+
+        private createEllipse(): void {
+            this._element = this.paper.ellipse(this._rect.x + this._rect.width / 2, this._rect.y + this._rect.height / 2,
+                this._rect.width/2, this._rect.height/2);
+            this._element.attr({
+                stroke: this._toolSettings.stroke,
+                strokeWidth: this._toolSettings.strokeWidth,
+                fill: this._toolSettings.fill
+            });
+        }
+
+
+        private setEllipseCoords(r?: Rect): void {
+
+            let rect = r || this._rect;
+
+            let cx = rect.x + rect.width / 2;
+            let cy = rect.y + rect.height / 2;
+            let rx = rect.width / 2;
+            let ry = rect.height / 2;
+
+            this._element.attr({
+                cx: cx,
+                cy: cy,
+                rx: rx,
+                ry: ry
+            });
         }
 
         drawComplete(): void {            
@@ -50,6 +68,13 @@ module markit {
 
             this._origin.x = Number(this._element.attr("x"));
             this._origin.y = Number(this._element.attr("y"));
+            let rx = Number(this._element.attr("rx"));
+            let ry = Number(this._element.attr("ry"));
+
+            this._rect.x = this._origin.x;
+            this._rect.y = this._origin.y;
+            this._rect.width = rx*2;
+            this._rect.height = ry*2;
         }
 
         reDraw() { };
@@ -66,16 +91,14 @@ module markit {
             });
         }
 
-        private getEndpoints(coords: Point): { x: number, y: number, rx: number, ry: number } {
-            
-            var endpoints = {
+        private getBounds(coords: Point): Rect {
+            let rect = {
                 x: coords.x < this._origin.x ? coords.x : this._origin.x,
                 y: coords.y < this._origin.y ? coords.y : this._origin.y,
-                rx: Math.abs(this._origin.x - coords.x),
-                ry: Math.abs(this._origin.y - coords.y) 
+                width: Math.abs(this._origin.x - coords.x),
+                height: Math.abs(this._origin.y - coords.y)  
             };
-
-            return endpoints;
+            return rect;
         }
 
     }
