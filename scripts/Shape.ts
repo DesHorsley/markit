@@ -66,7 +66,8 @@ module markit {
 
             this._toolSettings = toolSettings;
             this._paper = paper;
-            this._origin = origin;                      
+            this._origin = origin;    
+            this._selectedHandles = [];                  
         }       
 
         abstract destroy(): void;
