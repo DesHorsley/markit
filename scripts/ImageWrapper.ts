@@ -53,8 +53,13 @@ module markit {
             }
         }
 
-        reDraw() {
-            //TODO: implement
+        public redraw(mode: string, offset: Point, handleIndex?: number): void {
+            // TODO
+        }
+
+        public handleIndex(element: Element): number {
+        // TODO
+            return -1;
         }
 
         drawComplete(): void {

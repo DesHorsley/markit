@@ -65,18 +65,20 @@ module markit {
         private createHandles(): void {                    
 
             console.log("createHandles starting...");
-            // Start handle
-            this._selectedHandles.push(this.paper.ellipse(this._origin.x, this.origin.y, 5, 5));
-            // End handle
-            this._selectedHandles.push(this.paper.ellipse(this.endpoint.x, this.endpoint.y, 5, 5));
+            if (this._selected) {
+                // Start handle
+                this._selectedHandles.push(this.paper.ellipse(this._origin.x, this.origin.y, 5, 5));
+                // End handle
+                this._selectedHandles.push(this.paper.ellipse(this.endpoint.x, this.endpoint.y, 5, 5));
 
-            this._selectedHandles[0].attr({
-                fill: "#C0C0C0"
-            });
+                this._selectedHandles[0].attr({
+                    fill: "#C0C0C0"
+                });
 
-            this._selectedHandles[1].attr({
-                fill: "#C0C0C0"
-            });                       
+                this._selectedHandles[1].attr({
+                    fill: "#C0C0C0"
+                });
+            }                                   
         }
 
         private setLineCoordinates(startCoords?: Point, endCoords?: Point): void {
@@ -98,19 +100,20 @@ module markit {
 
         private setHandleEndpoints(startCoords?: Point, endCoords?: Point): void {
             console.log("Line.setHandleEndpoints called.");
+            if (this._selected) {
+                let startPoint = startCoords || this.origin;
+                let endPoint = endCoords || this.endpoint;
 
-            let startPoint = startCoords || this.origin;
-            let endPoint = endCoords || this.endpoint;
+                this._selectedHandles[0].attr({
+                    cx: startPoint.x,
+                    cy: startPoint.y
+                });
 
-            this._selectedHandles[0].attr({
-                cx: startPoint.x,
-                cy: startPoint.y
-            });
-
-            this._selectedHandles[1].attr({
-                cx: endPoint.x,
-                cy: endPoint.y
-            });           
+                this._selectedHandles[1].attr({
+                    cx: endPoint.x,
+                    cy: endPoint.y
+                });
+            }                       
         }
        
         public select(): void {
@@ -163,7 +166,7 @@ module markit {
                 };
             }
             this.setLineCoordinates(startCoords, endCoords);
-            this.setHandleEndpoints(startCoords, endCoords);
+            this.setHandleEndpoints(startCoords, endCoords);            
         }
 
         protected drag(offset: Point): void {
@@ -189,8 +192,7 @@ module markit {
         }
 
         private removeLine(): void {
-            this._element.remove();
-           // this._element.unclick(this.onclick);
+            this._element.remove();           
             this._element = null;
         }
 
@@ -203,9 +205,17 @@ module markit {
             }           
         }
 
-        drawComplete(): void {
-            this.select();
-           // this.element.click(this.onclick, this);
+        drawComplete(selectShape?: boolean): void {
+
+            let selected = true;
+            if (typeof selectShape !== "undefined" && selectShape != null) {
+                selected = selectShape;
+            }
+            console.log("line.drawComplete called. selectShape: " + selectShape);
+            if (selected) {
+                this.select();
+            }
+            
             let x1 = Number(this._element.attr("x1"));
             let y1 = Number(this._element.attr("y1"));
             let x2 = Number(this._element.attr("x2"));
@@ -218,7 +228,7 @@ module markit {
             this.endpoint.y = y2;
            
             this.setLineCoordinates();
-            this.setHandleEndpoints();
+            this.setHandleEndpoints();             
         }
 
         protected setToolSettings(): void {

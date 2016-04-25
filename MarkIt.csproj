@@ -71,6 +71,7 @@
     <TypeScriptCompile Include="scripts\ToolSettingsObserver.ts" />
     <TypeScriptCompile Include="scripts\MarkitEditor.ts" />
     <TypeScriptCompile Include="scripts\ToolsManager.ts" />
+    <TypeScriptCompile Include="scripts\Triangle.ts" />
     <TypeScriptCompile Include="scripts\typings\jasmine\jasmine.d.ts" />
     <TypeScriptCompile Include="UnitTests\LineTest.ts" />
     <TypeScriptCompile Include="UnitTests\PaperTest.ts" />

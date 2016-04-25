@@ -10,17 +10,37 @@ interface String {
 module markit {
 
     export class Arrow extends Shape {
+    
+        protected _line: Line;
+        protected _arrowHead: Triangle;
 
-        private previousEndPoint: Point;
-
-        protected arrowHead: Snap.Element;
-        protected line: Snap.Element;
+        public get element(): Snap.Element {
+            return this._line.element;
+        }
 
         constructor(paper: Snap.Paper, origin: Point, toolSettings: ToolSettings) {
             super(paper, origin, toolSettings);
+
+            this._line = new Line(paper, origin, toolSettings);
+            this._arrowHead = new Triangle(paper, origin, toolSettings);
+
+            let rect = {
+                x: 0,
+                y: 0,
+                width: 12,
+                height: 12
+            };
+            this._arrowHead.boundingBox = rect;
+            this._arrowHead.useDefaultBoundingBox = true;
         }
 
         public destroy(): void {
+            if (this._selectedHandles.length) {
+                this.removeHandles();
+                this._arrowHead.destroy();
+                this._line.destroy();
+                this._element = null;
+            }
         }
 
         draw(coords: Point): void {
@@ -29,66 +49,145 @@ module markit {
                 throw "coords parameter is required.";
             }
 
-            if (typeof this.arrowHead == "undefined" || this.arrowHead == null) {
+            this._line.draw(coords);
+            this._arrowHead.origin = coords;  
+            this._arrowHead.boundingBox.x = coords.x;
+            this._arrowHead.boundingBox.y = coords.y - this._arrowHead.boundingBox.height / 2;       
+            this._arrowHead.draw(coords);
 
-                var vertices = this.getVertices(this.origin);
-                var angle = this.calculateAngle(coords);
-                
-                this.arrowHead = this.paper.polygon(vertices);
+            let angle = this.calculateAngle(coords);
+            this._arrowHead.rotateElement(coords, angle);                     
+        }
 
-                this.arrowHead.attr({
-                    points: this.getPoints(coords)
-                });
-                    
-                var centre = this.getMidPoint(this.getVertices(coords));
+        private createHandles(): void {           
+            this._selectedHandles.push(this.paper.ellipse(this._line.origin.x, this._line.origin.y, 5, 5));
+            this._selectedHandles.push(this.paper.ellipse(this._line.endpoint.x, this._line.endpoint.y, 5, 5));           
+            this._selectedHandles.forEach(h => h.attr({
+                fill: "#C0C0C0"
+            }));
+        }
 
-                let str = `rotate(${angle}, ${centre.x}, ${centre.y})`;
-                console.log("transform string: " + str);
-                this.arrowHead.transform(str);                
-                 
-                this.arrowHead.attr({
-                    stroke: this._toolSettings.stroke,
-                    strokeWidth: this._toolSettings.strokeWidth,
-                    fill: this._toolSettings.stroke
-                });
+        private setHandleCoords(startCoords?: Point, endCoords?: Point): void {
 
-                this.line = this.paper.line(this.origin.x, this.origin.y, centre.x, centre.y);
-                this.line.attr({
-                    stroke: this._toolSettings.stroke,
-                    strokeWidth: this._toolSettings.strokeWidth
-                });                
-            }
-            else {
-               
-                var angle = this.calculateAngle(coords);
-                
-                this.arrowHead.attr({
-                    points: this.getPoints(coords)
-                });
-                var centre = this.getMidPoint(this.getVertices(coords));
+            let start = startCoords || this._line.origin;
+            let end = endCoords || this._line.endpoint;
+            console.log("arrow.setHandleCoords called: startCoords: x: " + start.x + ", y: " + start.y +
+                ", endCoords: x: " + end.x + ", y: " + end.y);
+            this._selectedHandles[0].attr({
+                cx: start.x,
+                cy: start.y
+            });           
+            this._selectedHandles[1].attr({
+                cx: end.x,
+                cy: end.y
+            });
+        }
 
-                let str = `rotate(${angle}, ${centre.x}, ${centre.y})`;
-                console.log("transform string: " + str);
-                this.arrowHead.transform(str);
+        private removeHandles(): void {
+            while (this._selectedHandles.length > 0) {
+                let handle = this._selectedHandles.pop();
+                handle.remove();
 
-                this.line.attr({
-                    x2: centre.x,
-                    y2: centre.y
-                });
-                
+                // TODO: remove any event handlers                
             }
         }
 
-        reDraw() {
-
+        public select(): void {
+            console.log("arrow.select called.");
+            if (!this._selected) {
+                this._selected = true;
+                this.createHandles();                
+            }
         }
 
-        containsElement() {
-            return false;
+        public deselect(): void {
+            console.log("Line.deselect called.");
+            if (this._selected) {
+                this.removeHandles();
+                this._selected = false;
+            }
         }
 
-        drawComplete(): void {
-            this._element = this.paper.group(this.arrowHead, this.line);
+        public drawComplete(selectShape?: boolean) {
+            console.log("arrow.drawComplete called.");
+            this.select();
+            this._line.drawComplete(false);
+            this._arrowHead.drawComplete(false);
+            this.origin.x = this._line.origin.x;
+            this.origin.y = this._line.origin.y;
+            this.setHandleCoords();
+        }
+
+        public redraw(mode: string, offset: Point, handleIndex?: number): void {
+            console.log("arrow.redraw called.");
+            if (mode === "resize") {
+                this.resize(offset, handleIndex);
+            } else if (mode === "drag") {
+                this.drag(offset);
+            }                        
+        }
+
+        private resize(offset: Point, handleIndex: number): void {
+
+            let startCoords; 
+            let endCoords;           
+            if (handleIndex === 0) {
+                startCoords = {
+                    x: this._line.origin.x + offset.x,
+                    y: this._line.origin.y + offset.y
+                };
+                endCoords = {
+                    x: this._line.endpoint.x,
+                    y: this._line.endpoint.y
+                };                                
+            } else {
+                startCoords = {
+                    x: this._line.origin.x,
+                    y: this._line.origin.y
+                };
+                endCoords = {
+                    x: this._line.endpoint.x + offset.x,
+                    y: this._line.endpoint.y + offset.y
+                };                
+            }
+            let angle = this.calculateAngle(endCoords,startCoords);
+            this._line.redraw("resize", offset, handleIndex);
+            this._arrowHead.origin = endCoords;
+            this._arrowHead.boundingBox.x = endCoords.x;
+            this._arrowHead.boundingBox.y = endCoords.y - this._arrowHead.boundingBox.height / 2;
+            this._arrowHead.draw(endCoords);
+            this._arrowHead.rotateElement(endCoords, angle);
+            this.setHandleCoords(startCoords, endCoords);
+        }
+
+        private drag(offset: Point): void {
+
+            let startCoords = {
+                x: this._line.origin.x + offset.x,
+                y: this._line.origin.y + offset.y
+            };
+            let endCoords = {
+                x: this._line.endpoint.x + offset.x,
+                y: this._line.endpoint.y + offset.y
+            };
+            let angle = this.calculateAngle(endCoords, startCoords);
+            this._line.redraw("drag", offset, -1);
+            this._arrowHead.origin = endCoords;
+            this._arrowHead.boundingBox.x = endCoords.x;
+            this._arrowHead.boundingBox.y = endCoords.y - this._arrowHead.boundingBox.height / 2;
+            this._arrowHead.draw(endCoords);
+            this._arrowHead.rotateElement(endCoords, angle);
+            this.setHandleCoords(startCoords, endCoords);
+        }
+
+        public containsElement(element: Element): boolean {
+            console.log("arrow.containsElement called.");
+            if (this._selectedHandles.length) {
+                if (this._selectedHandles[0].node === element || this._selectedHandles[1].node === element) {
+                    return true;
+                }
+            }
+            return this._line.element.node === element || this._arrowHead.element.node === element;
         }
 
         protected setToolSettings(): void {
@@ -98,61 +197,25 @@ module markit {
                 fill: this._toolSettings.fill
             });
         }
-
-        removeElement(): void {
-
-            super.removeElement();
-
-            if (typeof this.arrowHead !== "undefined" && this.arrowHead !== null) {
-                this.arrowHead.remove();
-                this.arrowHead = null;
-            }
-            if (typeof this.line !== "undefined" && this.line !== null) {
-                this.line.remove();
-                this.line = null;
-            }
-        }
-
-        private calculateAngle(coords: Point): number {
-
-            let dX = coords.x - this.origin.x;
-            let dY = coords.y - this.origin.y;
+        
+        private calculateAngle(coords: Point, startCoords?: Point): number {
+            let start = startCoords || this._line.origin;
+            let dX = coords.x - start.x;
+            let dY = coords.y - start.y;
             let angle = Math.atan2(dY, dX) / Math.PI * 180;           
             return Math.round(angle);
         }
-
-        private getPoints(coords: Point): string {
-
-            let points = [];
-            let vertices = this.getVertices(coords);
-            for (let i = 0; i < vertices.length; i++) {
-                points.push(vertices[i][0]);
-                points.push(vertices[i][1]);
+        
+        public handleIndex(element: Element): number {
+            let index = -1;
+            if (this._selectedHandles.length) {
+                if (this._selectedHandles[0].node === element) {
+                    index = 0;
+                } else if (this._selectedHandles[1].node === element) {
+                    index = 1;
+                }
             }
-
-            var str = `${points[0]},${points[1]} ${points[2]},${points[3]} ${points[4]},${points[5]}`;
-            console.log("points: " + str);
-            return str;
-        }
-
-        private getVertices(coords: Point): number[][] {
-
-            var vertices = [
-                [coords.x, coords.y - 10],
-                [coords.x + 20, coords.y],
-                [coords.x, coords.y + 10]
-            ];
-
-            return vertices;
-        }
-
-        private getMidPoint(vertices: number[][]): Point {
-                    
-            let midpoint;
-            let mX = Math.round((vertices[0][0] + vertices[1][0] + vertices[2][0]) / 3);
-            let mY = Math.round((vertices[0][1] + vertices[1][1] + vertices[2][1]) / 3);
-            midpoint = { x: mX, y: mY };
-            return midpoint;
+            return index;
         }
     }
 }

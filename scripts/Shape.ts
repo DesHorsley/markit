@@ -70,34 +70,19 @@ module markit {
             this._selectedHandles = [];                  
         }       
 
-        abstract destroy(): void;
-
-        removeElement(): void {
-            
-            if (typeof this._element !== "undefined" && this._element !== null) {
-                this._element.remove();
-                this._element = null;
-            }            
-        }
-
-        abstract draw(coords: { x: number, y: number }, actCoords?: any): void;
-        abstract drawComplete(): void;
-
-        public redraw(mode: string, offset: Point, handleIndex?: number): void {
-        }
-
+        public abstract destroy(): void;   
+        public  abstract draw(coords: { x: number, y: number }, actCoords?: any): void;
+        public abstract drawComplete(selectShape?: boolean): void;
+        public abstract redraw(mode: string, offset: Point, handleIndex?: number): void;
+        public abstract handleIndex(element: Element): number;
+       
         /**
          * Returns true if the supplie element is equal to an element that makes up the shape, or the shapes selectHandles
          * @param element
          */
-        abstract containsElement(element: Element): boolean;
+        public abstract containsElement(element: Element): boolean;
 
         protected abstract setToolSettings(): void;
-        
-        public handleIndex(element: Element): number {
-            return -1;
-        }
-       
     }
     
 }
