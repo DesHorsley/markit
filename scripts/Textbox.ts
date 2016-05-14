@@ -36,6 +36,24 @@ module markit {
                 let str = `top: ${maskTop}px; left: ${maskLeft}px; width: ${maskWidth}px; height: ${maskHeight}px`;
                 this._mask.style.cssText = str;
             }
+            if (typeof this._text != "undefined" && this._text != null) {
+                if (mode == "drag") {
+                    let rect = this.getBoundingRect();
+                    let x = rect.x + this.toolSettings.strokeWidth + 3;
+                    let y = rect.y + this.toolSettings.strokeWidth + 12 + (12 / 3)
+                    this._text.attr({ x: rect.x + this.toolSettings.strokeWidth, y: rect.y + this.toolSettings.strokeWidth });
+
+                    for (let i = 0; i < this._text.node.children.length; i++) {
+                        if (i == 0) {                            
+                            (this._text.node.children[i] as SVGTSpanElement).setAttribute("x", x.toString());
+                            (this._text.node.children[i] as SVGTSpanElement).setAttribute("y", y.toString());
+                        }
+                        else {
+                            (this._text.node.children[i] as SVGTSpanElement).setAttribute("x", x.toString());
+                        }
+                    }
+                }
+            }
         }
 
         public containsElement(element: Element): boolean {
