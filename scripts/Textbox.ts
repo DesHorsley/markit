@@ -44,7 +44,7 @@ module markit {
                     this._text.attr({ x: rect.x + this.toolSettings.strokeWidth, y: rect.y + this.toolSettings.strokeWidth });
 
                     for (let i = 0; i < this._text.node.children.length; i++) {
-                        if (i == 0) {                            
+                        if (i == 0) {
                             (this._text.node.children[i] as SVGTSpanElement).setAttribute("x", x.toString());
                             (this._text.node.children[i] as SVGTSpanElement).setAttribute("y", y.toString());
                         }
@@ -52,6 +52,19 @@ module markit {
                             (this._text.node.children[i] as SVGTSpanElement).setAttribute("x", x.toString());
                         }
                     }
+                }
+                else if (mode == "resize") {
+                    let str = this.getText();
+                    this.removeTextLines();
+                    let rect = this.getBoundingRect();
+                    this._text.attr({ x: rect.x + this.toolSettings.strokeWidth, y: rect.y + this.toolSettings.strokeWidth });
+                    let span = DomServices.createSpan();
+                    let x = rect.x + this.toolSettings.strokeWidth + 3;
+                    let y = rect.y + this.toolSettings.strokeWidth + 12 + (12 / 3);
+                    span.setAttribute("x", x.toString());
+                    span.setAttribute("y", y.toString());
+                    this._text.node.appendChild(span);
+                    this.insertText(str);
                 }
             }
         }
@@ -131,7 +144,7 @@ module markit {
             let words = text.split(" ");
             let rect = this.getBoundingRect();
 
-            let spanWidth = this._mask.clientWidth - 6;//rect.width - (this.toolSettings.strokeWidth * 2) - 6;
+            let spanWidth = rect.width - (this.toolSettings.strokeWidth * 2) - 6;
             let span = this._text.node.firstChild as SVGTSpanElement;
             for (let i = 0; i < words.length; i++) {
                 span.innerHTML += words[i] + " ";
@@ -155,6 +168,20 @@ module markit {
                     span = newSpan;
                 }
             }
+        }
+
+        protected removeTextLines(): void {
+            while (this._text.node.childNodes.length > 0) {
+                this._text.node.removeChild(this._text.node.firstChild);
+            }
+        }
+
+        protected getText(): string {
+            let str = '';
+            for (let i = 0; i < this._text.node.children.length; i++) {
+                str += this._text.node.children[i].textContent;
+            }
+            return str;
         }
 
         protected getBoundingRect(): Rect {
