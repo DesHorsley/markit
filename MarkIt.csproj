@@ -36,6 +36,7 @@
     <Content Include="scripts\jasmine\jasmine.js" />
     <Content Include="scripts\snap\snap.svg-min.js" />
     <Content Include="scripts\snap\snap.svg.js" />
+    <Content Include="style\markit.css" />
     <Content Include="TestPage.html" />
     <Content Include="web.config" />
   </ItemGroup>
@@ -56,6 +57,7 @@
   <ItemGroup />
   <ItemGroup>
     <TypeScriptCompile Include="scripts\Arrow.ts" />
+    <TypeScriptCompile Include="scripts\DomServices.ts" />
     <TypeScriptCompile Include="scripts\Ellipse.ts" />
     <TypeScriptCompile Include="scripts\ImageWrapper.ts" />
     <TypeScriptCompile Include="scripts\Line.ts" />
@@ -67,6 +69,7 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="scripts\Shape.ts" />
     <TypeScriptCompile Include="scripts\snap\snapsvg.d.ts" />
+    <TypeScriptCompile Include="scripts\Textbox.ts" />
     <TypeScriptCompile Include="scripts\ToolSettings.ts" />
     <TypeScriptCompile Include="scripts\ToolSettingsObserver.ts" />
     <TypeScriptCompile Include="scripts\MarkitEditor.ts" />

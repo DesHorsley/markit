@@ -56,6 +56,12 @@ module markit {
             btn.onclick = this.onclick.bind(this);
             tools.push(btn);
 
+            btn = document.createElement("button") as HTMLButtonElement;
+            btn.id = "markit_Text";
+            btn.innerText = "Text";
+            btn.onclick = this.onclick.bind(this);
+            tools.push(btn);
+
             btn = document.createElement("input") as HTMLInputElement;
             btn.id = "markit_Image";
             btn.type = "file";
@@ -97,6 +103,11 @@ module markit {
 
                 case "markit_Arrow":
                     toolSettings.commandMode = CommandMode.Arrow;
+                    this.toolSettingsManager.setToolSettings(toolSettings);
+                    break;
+
+                case "markit_Text":
+                    toolSettings.commandMode = CommandMode.Text;
                     this.toolSettingsManager.setToolSettings(toolSettings);
                     break;
                                 

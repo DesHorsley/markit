@@ -194,6 +194,9 @@ module markit {
                     else if (this.toolSettings.commandMode == CommandMode.Arrow) {
                         this.activeElement = new Arrow(this.paper, coords, this.toolSettings);
                     }
+                    else if (this.toolSettings.commandMode == CommandMode.Text) {
+                        this.activeElement = new Textbox(this.paper, coords, this.toolSettings);
+                    }
                 }
             }                              
         }

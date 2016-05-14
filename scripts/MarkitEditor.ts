@@ -14,7 +14,7 @@ module markit {
 
         init(svgId: string) {
             var svg = <SVGElement>document.getElementsByTagName("svg")[0];
-            
+            DomServices.setSVG(document.getElementById(svgId));
             this.paper = new markit.Paper(svg);            
             this.paper.toolSettings = new ToolSettings();
             this.toolsManager = new ToolsManager(this);

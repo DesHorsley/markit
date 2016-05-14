@@ -7,7 +7,8 @@ module markit {
         Line,
         Rectangle,
         Ellipse,
-        Arrow
+        Arrow,
+        Text
     }
 
     export class ToolSettings {
